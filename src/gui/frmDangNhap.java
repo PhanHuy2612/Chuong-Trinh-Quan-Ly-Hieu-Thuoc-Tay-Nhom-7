@@ -9,8 +9,8 @@ public class frmDangNhap extends JFrame {
     private JButton eyeButton;
     private ImageIcon eyeOpenIcon;  // icon mở mắt
     private ImageIcon eyeClosedIcon; // icon nhắm mắt
-    private RoundedTextField usernameField;
-    private RoundedPasswordField passwordField;
+    private UnderlineTextField usernameField;
+    private UnderlinePasswordField passwordField;
     private RoundedButton loginButton;
     private RoundedButton exitButton; // Nút thoát mới
     private JLabel titleLabel;
@@ -138,7 +138,7 @@ public class frmDangNhap extends JFrame {
         gbc.gridy = 1;
         formPanel.add(userLabel, gbc);
 
-        usernameField = new RoundedTextField(30);
+        usernameField = new UnderlineTextField(30);
         usernameField.setPreferredSize(new Dimension(300, 40));
         setupPlaceholder(usernameField, usernamePlaceholder, Color.GRAY);
         gbc.gridy = 2;
@@ -152,7 +152,7 @@ public class frmDangNhap extends JFrame {
         JPanel passwordRow = new JPanel(new BorderLayout());
         passwordRow.setBackground(Color.WHITE);
 
-        passwordField = new RoundedPasswordField(25);
+        passwordField = new UnderlinePasswordField(25);
         passwordField.setPreferredSize(new Dimension(220, 40));
         setupPasswordPlaceholder(passwordField, passwordPlaceholder, Color.GRAY);
         passwordRow.add(passwordField, BorderLayout.CENTER);
@@ -357,26 +357,29 @@ public class frmDangNhap extends JFrame {
         }
     }
 
-    // Cập nhật mới: viền đậm hơn, bo góc nhỏ hơn, chữ dịch phải
-    private static class RoundedTextField extends JTextField {
-        private int radius = 15;
+    // Cập nhật mới: chỉ vẽ thanh ngang phía dưới
+    private static class UnderlineTextField extends JTextField {
         private boolean hasFocus = false;
+        private Color underlineColor = new Color(180, 185, 190);
+        private Color focusUnderlineColor = new Color(59, 130, 246);
 
-        public RoundedTextField(int columns) {
+        public UnderlineTextField(int columns) {
             super(columns);
             setOpaque(false);
             setBorder(null);
-            // Dịch chữ sang phải hơn
-            setMargin(new Insets(10, 50, 10, 25)); // Tăng left padding lên 50px để tách khỏi viền
+            // Điều chỉnh margin để văn bản không bị che bởi thanh dưới
+            setMargin(new Insets(10, 10, 5, 10)); // Giảm left padding và bottom để gần thanh dưới
             addFocusListener(new FocusAdapter() {
                 @Override
                 public void focusGained(FocusEvent e) {
                     hasFocus = true;
+                    underlineColor = focusUnderlineColor;
                     repaint();
                 }
                 @Override
                 public void focusLost(FocusEvent e) {
                     hasFocus = false;
+                    underlineColor = new Color(180, 185, 190);
                     repaint();
                 }
             });
@@ -387,36 +390,41 @@ public class frmDangNhap extends JFrame {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+            // Vẽ nền trắng
             g2.setColor(getBackground() != null ? getBackground() : Color.WHITE);
-            RoundRectangle2D rect = new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), radius * 2, radius * 2);
-            g2.fill(rect);
+            g2.fillRect(0, 0, getWidth(), getHeight());
 
-            g2.setStroke(new BasicStroke(3f)); // viền đậm
-            g2.setColor(hasFocus ? new Color(59, 130, 246) : new Color(180, 185, 190));
-            g2.draw(rect);
+            // Vẽ thanh ngang phía dưới
+            g2.setStroke(new BasicStroke(3f));
+            g2.setColor(underlineColor);
+            g2.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1);
 
             super.paintComponent(g);
             g2.dispose();
         }
     }
 
-    private static class RoundedPasswordField extends JPasswordField {
-        private int radius = 15;
+    private static class UnderlinePasswordField extends JPasswordField {
         private boolean hasFocus = false;
-        public RoundedPasswordField(int columns) {
+        private Color underlineColor = new Color(180, 185, 190);
+        private Color focusUnderlineColor = new Color(59, 130, 246);
+
+        public UnderlinePasswordField(int columns) {
             super(columns);
             setOpaque(false);
             setBorder(null);
-            setMargin(new Insets(10, 50, 10, 25)); // Tăng left padding lên 50px để tách khỏi viền
+            setMargin(new Insets(10, 10, 5, 10)); // Giảm left padding và bottom để gần thanh dưới
             addFocusListener(new FocusAdapter() {
                 @Override
                 public void focusGained(FocusEvent e) {
                     hasFocus = true;
+                    underlineColor = focusUnderlineColor;
                     repaint();
                 }
                 @Override
                 public void focusLost(FocusEvent e) {
                     hasFocus = false;
+                    underlineColor = new Color(180, 185, 190);
                     repaint();
                 }
             });
@@ -426,11 +434,10 @@ public class frmDangNhap extends JFrame {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setColor(getBackground() != null ? getBackground() : Color.WHITE);
-            RoundRectangle2D rect = new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), radius * 2, radius * 2);
-            g2.fill(rect);
+            g2.fillRect(0, 0, getWidth(), getHeight());
             g2.setStroke(new BasicStroke(3f));
-            g2.setColor(hasFocus ? new Color(59, 130, 246) : new Color(180, 185, 190));
-            g2.draw(rect);
+            g2.setColor(underlineColor);
+            g2.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1);
             super.paintComponent(g);
             g2.dispose();
         }
