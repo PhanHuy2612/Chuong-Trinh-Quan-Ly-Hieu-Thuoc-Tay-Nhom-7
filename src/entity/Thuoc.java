@@ -1,5 +1,7 @@
 package entity;
 
+import enums.DonViTinh;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -11,11 +13,12 @@ public class Thuoc {
     private int soLuong;
     private LocalDate hanSuDung;
     private boolean trangThaiTonKho;        // TONKHO, HETHANG, BINHTHUONG
+    private DonViTinh donViTinh;            // VIEN, CHAI, HOP, GOI
 
     public Thuoc() {
     }
 
-    public Thuoc(String maThuoc, String tenThuoc, double giaBan, double giaNhap, int soLuong, LocalDate hanSuDung, boolean trangThaiTonKho) {
+    public Thuoc(String maThuoc, String tenThuoc, double giaBan, double giaNhap, int soLuong, LocalDate hanSuDung, boolean trangThaiTonKho, DonViTinh donViTinh) {
         this.maThuoc = maThuoc;
         this.tenThuoc = tenThuoc;
         this.giaBan = giaBan;
@@ -23,6 +26,7 @@ public class Thuoc {
         this.soLuong = soLuong;
         this.hanSuDung = hanSuDung;
         this.trangThaiTonKho = trangThaiTonKho;
+        this.donViTinh = donViTinh;
     }
 
     public String getMaThuoc() {
@@ -81,6 +85,14 @@ public class Thuoc {
         this.trangThaiTonKho = trangThaiTonKho;
     }
 
+    public DonViTinh getDonViTinh() {
+        return donViTinh;
+    }
+
+    public void setDonViTinh(DonViTinh donViTinh) {
+        this.donViTinh = donViTinh;
+    }
+
     @Override
     public String toString() {
         return "Thuoc{" +
@@ -91,6 +103,7 @@ public class Thuoc {
                 ", soLuong=" + soLuong +
                 ", hanSuDung=" + hanSuDung +
                 ", trangThaiTonKho=" + trangThaiTonKho +
+                ", donViTinh=" + donViTinh +
                 '}';
     }
 

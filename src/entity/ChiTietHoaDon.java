@@ -7,15 +7,19 @@ public class ChiTietHoaDon {
     private String maSP;
     private LoaiKhachHang loaiKhachHang;
     private double tienGiam;
+    private String soLuong;
+    private double donGia;
 
-    public ChiTietHoaDon(String maHD, String maSP, LoaiKhachHang loaiKhachHang, double tienGiam) {
+    public ChiTietHoaDon() {
+    }
+
+    public ChiTietHoaDon(String maHD, String maSP, LoaiKhachHang loaiKhachHang, double tienGiam, String soLuong, double donGia) {
         this.maHD = maHD;
         this.maSP = maSP;
         this.loaiKhachHang = loaiKhachHang;
         this.tienGiam = tienGiam;
-    }
-    public  ChiTietHoaDon(){
-        this("", "", LoaiKhachHang.VANG_LAI, 0);
+        this.soLuong = soLuong;
+        this.donGia = donGia;
     }
 
     public String getMaHD() {
@@ -50,13 +54,21 @@ public class ChiTietHoaDon {
         this.tienGiam = tienGiam;
     }
 
-    @Override
-    public String toString() {
-        return "ChiTietHoaDon{" +
-                "maHD='" + maHD + '\'' +
-                ", maSP='" + maSP + '\'' +
-                ", loaiKhachHang=" + loaiKhachHang +
-                ", tienGiam=" + tienGiam +
-                '}';
+    public String getSoLuong() {
+        return soLuong;
     }
+
+    public void setSoLuong(String soLuong) {
+        this.soLuong = soLuong;
+    }
+
+    public double getDonGia() {
+        return donGia;
+    }
+
+    public void setDonGia(double donGia) {
+        this.donGia = donGia;
+    }
+
+
 }
