@@ -10,6 +10,10 @@ public enum TrangThaiTaiKhoan {
         this.moTa = moTa;
     }
 
+    public String getMoTa() {
+        return moTa;
+    }
+
     @Override
     public String toString() {
         return moTa;
