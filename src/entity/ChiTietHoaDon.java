@@ -70,5 +70,19 @@ public class ChiTietHoaDon {
         this.donGia = donGia;
     }
 
+    public double tinhThanhTien() {
+        return donGia * Double.parseDouble(soLuong) - tienGiam;
+    }
 
+    @Override
+    public String toString() {
+        return "ChiTietHoaDon{" +
+                "maHD='" + maHD + '\'' +
+                ", maSP='" + maSP + '\'' +
+                ", loaiKhachHang=" + loaiKhachHang +
+                ", tienGiam=" + tienGiam +
+                ", soLuong='" + soLuong + '\'' +
+                ", donGia=" + donGia +
+                '}';
+    }
 }

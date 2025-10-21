@@ -69,6 +69,10 @@ public class HoaDon {
         this.phuongThucThanhToan = phuongThucThanhToan;
     }
 
+    public double tinhTongTien(double tienHang, double tienGiam) {
+        return tienHang - tienGiam;
+    }
+
     @Override
     public String toString() {
         return "HoaDon{" +
