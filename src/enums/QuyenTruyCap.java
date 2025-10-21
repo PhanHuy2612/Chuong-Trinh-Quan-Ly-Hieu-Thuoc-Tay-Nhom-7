@@ -1,8 +1,8 @@
 package enums;
 
 public enum QuyenTruyCap {
-    DUOCSI("Dược Sĩ"),
-    QUANLY("Quản Lý");
+    DUOC_SI("Dược Sĩ"),
+    QUAN_LY("Quản Lý");
 
     private final String moTa;
 
