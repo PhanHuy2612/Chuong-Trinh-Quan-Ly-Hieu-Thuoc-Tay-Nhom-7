@@ -1,12 +1,12 @@
 package enums;
 
-public enum QuyenTruyCap {
+public enum PhanQuyen {
     DUOC_SI("Dược Sĩ"),
     QUAN_LY("Quản Lý");
 
     private final String moTa;
 
-    QuyenTruyCap(String moTa) {
+    PhanQuyen(String moTa) {
         this.moTa = moTa;
     }
 
