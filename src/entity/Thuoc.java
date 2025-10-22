@@ -1,6 +1,7 @@
 package entity;
 
 import enums.DonViTinh;
+import enums.TrangThaiTonKho;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -12,13 +13,15 @@ public class Thuoc {
     private double giaNhap;
     private int soLuong;
     private LocalDate hanSuDung;
-    private boolean trangThaiTonKho;        // TONKHO, HETHANG, BINHTHUONG
-    private DonViTinh donViTinh;            // VIEN, CHAI, HOP, GOI
+    private TrangThaiTonKho trangThaiTonKho;        // CON_HANG, HET_HANG, SAP_HET_HANG
+    private DonViTinh donViTinh;
+    private NhaCungCap nhaCungCap;
+    private KhoHang khoHang;       // VIEN, CHAI, HOP, GOI
 
     public Thuoc() {
     }
 
-    public Thuoc(String maThuoc, String tenThuoc, double giaBan, double giaNhap, int soLuong, LocalDate hanSuDung, boolean trangThaiTonKho, DonViTinh donViTinh) {
+    public Thuoc(String maThuoc, String tenThuoc, double giaBan, double giaNhap, int soLuong, LocalDate hanSuDung, TrangThaiTonKho trangThaiTonKho, DonViTinh donViTinh, NhaCungCap nhaCungCap, KhoHang khoHang) {
         this.maThuoc = maThuoc;
         this.tenThuoc = tenThuoc;
         this.giaBan = giaBan;
@@ -27,6 +30,8 @@ public class Thuoc {
         this.hanSuDung = hanSuDung;
         this.trangThaiTonKho = trangThaiTonKho;
         this.donViTinh = donViTinh;
+        this.nhaCungCap = nhaCungCap;
+        this.khoHang = khoHang;
     }
 
     public String getMaThuoc() {
@@ -77,11 +82,11 @@ public class Thuoc {
         this.hanSuDung = hanSuDung;
     }
 
-    public boolean isTrangThaiTonKho() {
+    public TrangThaiTonKho getTrangThaiTonKho() {
         return trangThaiTonKho;
     }
 
-    public void setTrangThaiTonKho(boolean trangThaiTonKho) {
+    public void setTrangThaiTonKho(TrangThaiTonKho trangThaiTonKho) {
         this.trangThaiTonKho = trangThaiTonKho;
     }
 
@@ -91,6 +96,22 @@ public class Thuoc {
 
     public void setDonViTinh(DonViTinh donViTinh) {
         this.donViTinh = donViTinh;
+    }
+
+    public NhaCungCap getNhaCungCap() {
+        return nhaCungCap;
+    }
+
+    public void setNhaCungCap(NhaCungCap nhaCungCap) {
+        this.nhaCungCap = nhaCungCap;
+    }
+
+    public KhoHang getKhoHang() {
+        return khoHang;
+    }
+
+    public void setKhoHang(KhoHang khoHang) {
+        this.khoHang = khoHang;
     }
 
     @Override
@@ -104,6 +125,8 @@ public class Thuoc {
                 ", hanSuDung=" + hanSuDung +
                 ", trangThaiTonKho=" + trangThaiTonKho +
                 ", donViTinh=" + donViTinh +
+                ", nhaCungCap=" + nhaCungCap +
+                ", khoHang=" + khoHang +
                 '}';
     }
 
