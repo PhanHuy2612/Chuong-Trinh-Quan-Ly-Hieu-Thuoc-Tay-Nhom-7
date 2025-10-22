@@ -20,13 +20,13 @@ public class HoaDon {
     }
 
     public HoaDon(String maHD, NhanVien nhanVien, KhachHang khachHang, KhuyenMai khuyenMai, LocalDate ngayLap, PhuongThucThanhToan phuongThucThanhToan) {
+        this();
         this.maHD = maHD;
         this.nhanVien = nhanVien;
         this.khachHang = khachHang;
         this.khuyenMai = khuyenMai;
         this.ngayLap = ngayLap;
         this.phuongThucThanhToan = phuongThucThanhToan;
-        this();
     }
 
     public String getMaHD() {
