@@ -8,9 +8,9 @@ import java.util.Objects;
 
 public class HoaDon {
     private String maHD;
-    private String maNV;
-    private String maKH;
-    private String maKM;
+    private NhanVien nhanVien;
+    private KhachHang khachHang;
+    private KhuyenMai khuyenMai;
     private LocalDate ngayLap;
     private PhuongThucThanhToan phuongThucThanhToan;
     private List<ChiTietHoaDon> danhSachCTHD;
@@ -19,14 +19,14 @@ public class HoaDon {
         this.danhSachCTHD = new ArrayList<>();
     }
 
-    public HoaDon(String maHD, String maNV, String maKH, String maKM, LocalDate ngayLap, PhuongThucThanhToan phuongThucThanhToan) {
-        this();
+    public HoaDon(String maHD, NhanVien nhanVien, KhachHang khachHang, KhuyenMai khuyenMai, LocalDate ngayLap, PhuongThucThanhToan phuongThucThanhToan) {
         this.maHD = maHD;
-        this.maNV = maNV;
-        this.maKH = maKH;
-        this.maKM = maKM;
+        this.nhanVien = nhanVien;
+        this.khachHang = khachHang;
+        this.khuyenMai = khuyenMai;
         this.ngayLap = ngayLap;
         this.phuongThucThanhToan = phuongThucThanhToan;
+        this();
     }
 
     public String getMaHD() {
@@ -37,28 +37,28 @@ public class HoaDon {
         this.maHD = maHD;
     }
 
-    public String getMaNV() {
-        return maNV;
+    public NhanVien getNhanVien() {
+        return nhanVien;
     }
 
-    public void setMaNV(String maNV) {
-        this.maNV = maNV;
+    public void setNhanVien(NhanVien nhanVien) {
+        this.nhanVien = nhanVien;
     }
 
-    public String getMaKH() {
-        return maKH;
+    public KhachHang getKhachHang() {
+        return khachHang;
     }
 
-    public void setMaKH(String maKH) {
-        this.maKH = maKH;
+    public void setKhachHang(KhachHang khachHang) {
+        this.khachHang = khachHang;
     }
 
-    public String getMaKM() {
-        return maKM;
+    public KhuyenMai getKhuyenMai() {
+        return khuyenMai;
     }
 
-    public void setMaKM(String maKM) {
-        this.maKM = maKM;
+    public void setKhuyenMai(KhuyenMai khuyenMai) {
+        this.khuyenMai = khuyenMai;
     }
 
     public LocalDate getNgayLap() {
@@ -102,26 +102,26 @@ public class HoaDon {
     public String toString() {
         return "HoaDon{" +
                 "maHD='" + maHD + '\'' +
-                ", maNV='" + maNV + '\'' +
-                ", maKH='" + maKH + '\'' +
-                ", maKM='" + maKM + '\'' +
+                // Chỉ in ra mã của các đối tượng
+                ", nhanVien=" + (nhanVien != null ? nhanVien.getMaNV() : "N/A") +
+                ", khachHang=" + (khachHang != null ? khachHang.getMaKH() : "N/A") +
+                ", khuyenMai=" + (khuyenMai != null ? khuyenMai.getMaKM() : "N/A") +
                 ", ngayLap=" + ngayLap +
                 ", phuongThucThanhToan=" + phuongThucThanhToan +
-                ", soLuongCTHD=" + danhSachCTHD.size() +
-                ", tongTien=" + tinhTongTien() +
+                ", soLuongCTHD=" + danhSachCTHD.size() + // In số lượng CTHD
+                ", tongTien=" + tinhTongTien() + // In tổng tiền
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof HoaDon hoaDon)) return false;
-        return Objects.equals(getMaHD(), hoaDon.getMaHD()) && Objects.equals(getMaNV(), hoaDon.getMaNV()) && Objects.equals(getMaKH(), hoaDon.getMaKH()) && Objects.equals(getMaKM(), hoaDon.getMaKM()) && Objects.equals(getNgayLap(), hoaDon.getNgayLap()) && getPhuongThucThanhToan() == hoaDon.getPhuongThucThanhToan();
+        if (o == null || getClass() != o.getClass()) return false;
+        HoaDon hoaDon = (HoaDon) o;
+        return Objects.equals(maHD, hoaDon.maHD);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getMaHD(), getMaNV(), getMaKH(), getMaKM(), getNgayLap(), getPhuongThucThanhToan());
+        return Objects.hashCode(maHD);
     }
-
 }
