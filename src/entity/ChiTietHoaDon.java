@@ -3,39 +3,29 @@ package entity;
 import enums.LoaiKhachHang;
 
 public class ChiTietHoaDon {
-    private String maHD;
-    private String maSP;
+    private Thuoc thuoc;
     private LoaiKhachHang loaiKhachHang;
     private double tienGiam;
-    private String soLuong;
+    private int soLuong;
     private double donGia;
 
     public ChiTietHoaDon() {
     }
 
-    public ChiTietHoaDon(String maHD, String maSP, LoaiKhachHang loaiKhachHang, double tienGiam, String soLuong, double donGia) {
-        this.maHD = maHD;
-        this.maSP = maSP;
+    public ChiTietHoaDon(Thuoc thuoc, LoaiKhachHang loaiKhachHang, double tienGiam, int soLuong, double donGia) {
+        this.thuoc = thuoc;
         this.loaiKhachHang = loaiKhachHang;
         this.tienGiam = tienGiam;
         this.soLuong = soLuong;
         this.donGia = donGia;
     }
 
-    public String getMaHD() {
-        return maHD;
+    public Thuoc getThuoc() {
+        return thuoc;
     }
 
-    public void setMaHD(String maHD) {
-        this.maHD = maHD;
-    }
-
-    public String getMaSP() {
-        return maSP;
-    }
-
-    public void setMaSP(String maSP) {
-        this.maSP = maSP;
+    public void setThuoc(Thuoc thuoc) {
+        this.thuoc = thuoc;
     }
 
     public LoaiKhachHang getLoaiKhachHang() {
@@ -54,11 +44,11 @@ public class ChiTietHoaDon {
         this.tienGiam = tienGiam;
     }
 
-    public String getSoLuong() {
+    public int getSoLuong() {
         return soLuong;
     }
 
-    public void setSoLuong(String soLuong) {
+    public void setSoLuong(int soLuong) {
         this.soLuong = soLuong;
     }
 
@@ -71,17 +61,16 @@ public class ChiTietHoaDon {
     }
 
     public double tinhThanhTien() {
-        return donGia * Double.parseDouble(soLuong) - tienGiam;
+        return donGia * soLuong - tienGiam;
     }
 
     @Override
     public String toString() {
         return "ChiTietHoaDon{" +
-                "maHD='" + maHD + '\'' +
-                ", maSP='" + maSP + '\'' +
+                "maSP='" + (thuoc != null ? thuoc.getMaThuoc() : "N/A") + '\'' +
                 ", loaiKhachHang=" + loaiKhachHang +
                 ", tienGiam=" + tienGiam +
-                ", soLuong='" + soLuong + '\'' +
+                ", soLuong=" + soLuong +
                 ", donGia=" + donGia +
                 '}';
     }
