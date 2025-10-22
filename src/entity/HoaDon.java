@@ -2,6 +2,8 @@ package entity;
 
 import enums.PhuongThucThanhToan;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class HoaDon {
@@ -11,8 +13,14 @@ public class HoaDon {
     private String maKM;
     private LocalDate ngayLap;
     private PhuongThucThanhToan phuongThucThanhToan;
+    private List<ChiTietHoaDon> danhSachCTHD;
+
+    public HoaDon() {
+        this.danhSachCTHD = new ArrayList<>();
+    }
 
     public HoaDon(String maHD, String maNV, String maKH, String maKM, LocalDate ngayLap, PhuongThucThanhToan phuongThucThanhToan) {
+        this();
         this.maHD = maHD;
         this.maNV = maNV;
         this.maKH = maKH;
@@ -69,8 +77,25 @@ public class HoaDon {
         this.phuongThucThanhToan = phuongThucThanhToan;
     }
 
-    public double tinhTongTien(double tienHang, double tienGiam) {
-        return tienHang - tienGiam;
+    public List<ChiTietHoaDon> getDanhSachCTHD() {
+        return danhSachCTHD;
+    }
+
+    public void setDanhSachCTHD(List<ChiTietHoaDon> danhSachCTHD) {
+        this.danhSachCTHD = danhSachCTHD;
+    }
+
+    public boolean themChiTiet(ChiTietHoaDon cthd) {
+        // Thêm các kiểm tra nghiệp vụ nếu cần
+        return this.danhSachCTHD.add(cthd);
+    }
+
+    public double tinhTongTien() {
+        double tongTienHang = 0;
+        for (ChiTietHoaDon cthd : danhSachCTHD) {
+            tongTienHang += cthd.tinhThanhTien();
+        }
+        return tongTienHang;
     }
 
     @Override
@@ -82,6 +107,8 @@ public class HoaDon {
                 ", maKM='" + maKM + '\'' +
                 ", ngayLap=" + ngayLap +
                 ", phuongThucThanhToan=" + phuongThucThanhToan +
+                ", soLuongCTHD=" + danhSachCTHD.size() +
+                ", tongTien=" + tinhTongTien() +
                 '}';
     }
 
@@ -97,8 +124,4 @@ public class HoaDon {
         return Objects.hash(getMaHD(), getMaNV(), getMaKH(), getMaKM(), getNgayLap(), getPhuongThucThanhToan());
     }
 
-    public static void main(String[] args) {
-        HoaDon hoaDon = new HoaDon("HD001", "NV001", "KH001", "KM001", LocalDate.now(), PhuongThucThanhToan.TIEN_MAT);
-        System.out.println(hoaDon);
-    }
 }
