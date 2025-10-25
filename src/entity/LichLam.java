@@ -1,17 +1,18 @@
 package entity;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class LichLam {
     private String maLichLam;
-    private String ngayLam;
+    private LocalDate ngayLam;
     private CaLam caLam;
     private NhanVien  nhanVien;
 
     public LichLam() {
     }
 
-    public LichLam(String maLichLam, String ngayLam, CaLam caLam, NhanVien nhanVien) {
+    public LichLam(String maLichLam, LocalDate ngayLam, CaLam caLam, NhanVien nhanVien) {
         this.maLichLam = maLichLam;
         this.ngayLam = ngayLam;
         this.caLam = caLam;
@@ -26,11 +27,11 @@ public class LichLam {
         this.maLichLam = maLichLam;
     }
 
-    public String getNgayLam() {
+    public LocalDate getNgayLam() {
         return ngayLam;
     }
 
-    public void setNgayLam(String ngayLam) {
+    public void setNgayLam(LocalDate ngayLam) {
         this.ngayLam = ngayLam;
     }
 

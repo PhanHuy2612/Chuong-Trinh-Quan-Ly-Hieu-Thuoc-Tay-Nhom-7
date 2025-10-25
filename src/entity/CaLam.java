@@ -1,17 +1,18 @@
 package entity;
 
+import java.time.LocalTime;
 import java.util.Objects;
 
 public class CaLam {
     private String maCa;
     private String tenCa;
-    private String thoiGianBatDau;
-    private String thoiGianKetThuc;
+    private LocalTime thoiGianBatDau;
+    private LocalTime thoiGianKetThuc;
 
     public CaLam() {
     }
 
-    public CaLam(String maCa, String tenCa, String thoiGianBatDau, String thoiGianKetThuc) {
+    public CaLam(String maCa, String tenCa, LocalTime thoiGianBatDau, LocalTime thoiGianKetThuc) {
         this.maCa = maCa;
         this.tenCa = tenCa;
         this.thoiGianBatDau = thoiGianBatDau;
@@ -34,19 +35,19 @@ public class CaLam {
         this.tenCa = tenCa;
     }
 
-    public String getThoiGianBatDau() {
+    public LocalTime getThoiGianBatDau() {
         return thoiGianBatDau;
     }
 
-    public void setThoiGianBatDau(String thoiGianBatDau) {
+    public void setThoiGianBatDau(LocalTime thoiGianBatDau) {
         this.thoiGianBatDau = thoiGianBatDau;
     }
 
-    public String getThoiGianKetThuc() {
+    public LocalTime getThoiGianKetThuc() {
         return thoiGianKetThuc;
     }
 
-    public void setThoiGianKetThuc(String thoiGianKetThuc) {
+    public void setThoiGianKetThuc(LocalTime thoiGianKetThuc) {
         this.thoiGianKetThuc = thoiGianKetThuc;
     }
 
