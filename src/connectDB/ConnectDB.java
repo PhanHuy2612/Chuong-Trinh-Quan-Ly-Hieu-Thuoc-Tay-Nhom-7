@@ -17,7 +17,7 @@ public class ConnectDB {
     }
 
     public void connect() throws SQLException {
-        String url = "jdbc:sqlserver://localhost:1433;databaseName=QLTHUOC; encrypt=true;trustServerCertificate=true;";
+        String url = "jdbc:sqlserver://localhost:1433;databaseName=ThienLuong";
         String user = "sa";
         String password = "sapassword";
         con = DriverManager.getConnection(url, user, password);
@@ -33,15 +33,5 @@ public class ConnectDB {
             }
         }
 
-    }
-
-    public static void main(String[] args) {
-        try {
-            ConnectDB.getInstance().connect();
-            System.out.println("Kết nối thành công!");
-        } catch (SQLException e) {
-            System.out.println("Kết nối thất bại!");
-            e.printStackTrace();
-        }
     }
 }
