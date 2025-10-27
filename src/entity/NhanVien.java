@@ -21,6 +21,9 @@ public class NhanVien {
         this.soDienThoai = soDienThoai;
     }
 
+    public NhanVien(String maNV, String tenNV, String soDienThoai, String email, String chucVu, double luongCoBan, LocalDate ngayVaoLam, String trangThai, String matKhau) {
+    }
+
     public String getMaNV() {
         return maNV;
     }
@@ -83,4 +86,6 @@ public class NhanVien {
     public int hashCode() {
         return Objects.hashCode(maNV);
     }
+
+
 }

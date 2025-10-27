@@ -1,18 +1,9 @@
 package gui;
 
-import connectDB.ConnectDB;
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
-import javafx.stage.Stage;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class frmDangNhap extends JFrame {
     private JButton eyeButton;
@@ -47,9 +38,6 @@ public class frmDangNhap extends JFrame {
 
         add(splitPane, BorderLayout.CENTER);
         setVisible(true);
-
-        // Initialize JavaFX toolkit to avoid "Toolkit not initialized" error
-        new JFXPanel();
     }
 
     private JPanel createLeftPanel() {
@@ -290,7 +278,7 @@ public class frmDangNhap extends JFrame {
             public void focusLost(FocusEvent e) {
                 if (new String(field.getPassword()).length() == 0) {
                     field.setEchoChar((char) 0);
-                    field.setForeground(color);
+                    field.setForeground(Color.BLACK);
                     field.setText(placeholder);
                 }
             }
@@ -305,65 +293,20 @@ public class frmDangNhap extends JFrame {
             String password = new String(passwordField.getPassword()).trim();
             if (password.equals(passwordPlaceholder)) password = "";
 
-            if (username.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(frmDangNhap.this,
-                        "Vui lòng nhập tên đăng nhập và mật khẩu!",
-                        "Lỗi", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            try {
-                Connection con = ConnectDB.getConnection();
-                if (con == null) {
+            if ("admin".equals(username) && "123456".equals(password)) {
+                if (rememberCheckBox.isSelected()) {
                     JOptionPane.showMessageDialog(frmDangNhap.this,
-                            "Kết nối cơ sở dữ liệu thất bại!",
-                            "Lỗi", JOptionPane.ERROR_MESSAGE);
-                    return;
+                            "Đã lưu thông tin đăng nhập (demo).",
+                            "Nhớ mật khẩu", JOptionPane.INFORMATION_MESSAGE);
                 }
-
-                String sql = "SELECT tenDangNhap, quyenTruyCap, matKhau, trangThaiTaiKhoan, maNhanVien FROM TaiKhoan WHERE tenDangNhap = ? AND matKhau = ?";
-                PreparedStatement ps = con.prepareStatement(sql);
-                ps.setString(1, username);
-                ps.setString(2, password);
-                ResultSet rs = ps.executeQuery();
-
-                if (rs.next()) {
-                    String tenDangNhap = rs.getString("tenDangNhap");
-                    String quyenTruyCap = rs.getString("quyenTruyCap");
-                    String matKhau = rs.getString("matKhau");
-                    String trangThaiTaiKhoan = rs.getString("trangThaiTaiKhoan");
-                    String maNhanVien = rs.getString("maNhanVien");
-
-                    if (rememberCheckBox.isSelected()) {
-                        JOptionPane.showMessageDialog(frmDangNhap.this,
-                                "Đã lưu thông tin đăng nhập.",
-                                "Nhớ mật khẩu", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                    JOptionPane.showMessageDialog(frmDangNhap.this,
-                            "Đăng nhập thành công! Chào mừng đến với hệ thống quản lý bán thuốc.",
-                            "Thành công", JOptionPane.INFORMATION_MESSAGE);
-
-                    dispose(); // Đóng form đăng nhập
-
-                    // Khởi động JavaFX Application từ Swing thread
-                    Platform.runLater(() -> {
-                        try {
-                            new frmQLBanThuoc_NV().start(new Stage());
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                            JOptionPane.showMessageDialog(null, "Lỗi khi mở dashboard: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-                        }
-                    });
-                } else {
-                    JOptionPane.showMessageDialog(frmDangNhap.this,
-                            "Tên đăng nhập hoặc mật khẩu không đúng!",
-                            "Lỗi", JOptionPane.ERROR_MESSAGE);
-                    passwordField.setText("");
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
                 JOptionPane.showMessageDialog(frmDangNhap.this,
-                        "Lỗi truy vấn cơ sở dữ liệu!",
+                        "Đăng nhập thành công! Chào mừng đến với hệ thống quản lý bán thuốc.",
+                        "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                new DashboardInterface();
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(frmDangNhap.this,
+                        "Tên đăng nhập hoặc mật khẩu không đúng!",
                         "Lỗi", JOptionPane.ERROR_MESSAGE);
                 passwordField.setText("");
             }
@@ -497,6 +440,19 @@ public class frmDangNhap extends JFrame {
             g2.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1);
             super.paintComponent(g);
             g2.dispose();
+        }
+    }
+
+    private class DashboardInterface extends JFrame {
+        public DashboardInterface() {
+            setTitle("Dashboard - Quản lý Bán Thuốc");
+            setSize(600, 400);
+            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            setLocationRelativeTo(null);
+            JLabel welcomeLabel = new JLabel("Chào mừng! Hệ thống quản lý bán thuốc đang hoạt động.", SwingConstants.CENTER);
+            welcomeLabel.setFont(new Font("Arial", Font.BOLD, 16));
+            add(welcomeLabel, BorderLayout.CENTER);
+            setVisible(true);
         }
     }
 

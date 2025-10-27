@@ -27,6 +27,7 @@ public class HoaDon {
         this.khuyenMai = khuyenMai;
         this.ngayLap = ngayLap;
         this.phuongThucThanhToan = phuongThucThanhToan;
+
     }
 
     public String getMaHD() {
