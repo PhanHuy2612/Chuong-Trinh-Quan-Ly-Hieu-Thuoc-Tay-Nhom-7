@@ -9,206 +9,200 @@ GO
 --Tạo bảng 
 --1. Bảng CaLam
 CREATE TABLE CaLam (
-    maCa VARCHAR(10) PRIMARY KEY,
-    tenCa NVARCHAR(50) NOT NULL,
-    thoiGianBatDau TIME NOT NULL,
-    thoiGianKetThuc TIME NOT NULL
+                       maCa VARCHAR(10) PRIMARY KEY,
+                       tenCa NVARCHAR(50) NOT NULL,
+                       thoiGianBatDau TIME NOT NULL,
+                       thoiGianKetThuc TIME NOT NULL
 )
-GO
+    GO
 
 --2. Bảng KhachHang
 CREATE TABLE KhachHang (
-    maKH VARCHAR(15) PRIMARY KEY,
-    tenKH NVARCHAR(100) NOT NULL,
-    gioiTinh BIT NOT NULL,
-    loaiKhachHang NVARCHAR(50) NOT NULL, 
-    diemTichLuy INT NOT NULL DEFAULT 0
+                           maKH VARCHAR(15) PRIMARY KEY,
+                           tenKH NVARCHAR(100) NOT NULL,
+                           gioiTinh BIT NOT NULL,
+                           loaiKhachHang NVARCHAR(50) NOT NULL,
+                           diemTichLuy INT NOT NULL DEFAULT 0
 );
-GO
-
--- Cập nhật lại Khóa ngoại trong bảng HoaDon (nếu đã xóa ở trên)
-ALTER TABLE HoaDon ADD CONSTRAINT FK_HoaDon_KhachHang 
-    FOREIGN KEY (maKH) 
-    REFERENCES KhachHang(maKH);
 GO
 
 --3. Bảng NhanVien
 CREATE TABLE NhanVien (
-    maNV VARCHAR(10) PRIMARY KEY,
-    tenNV NVARCHAR(100) NOT NULL,
-    gioiTinh BIT NOT NULL,  --(1: Nam, 0: Nữ)
-    ngaySinh DATE NOT NULL,
-    soDienThoai VARCHAR(15) UNIQUE NOT NULL
+                          maNV VARCHAR(10) PRIMARY KEY,
+                          tenNV NVARCHAR(100) NOT NULL,
+                          gioiTinh BIT NOT NULL,  --(1: Nam, 0: Nữ)
+                          ngaySinh DATE NOT NULL,
+                          soDienThoai VARCHAR(15) UNIQUE NOT NULL
 );
 GO
 
 --4. Bảng TaiKhoan
 CREATE TABLE TaiKhoan (
-    tenDangNhap VARCHAR(15) PRIMARY KEY,   --(la SDT cua nhan vien)
-    matKhau VARCHAR(255) NOT NULL,
-    quyenTruyCap NVARCHAR(50) NOT NULL,
-    trangThai NVARCHAR(50) NOT NULL,
-    
-    CONSTRAINT FK_TaiKhoan_NhanVien_SDT 
-        FOREIGN KEY (tenDangNhap) 
-        REFERENCES NhanVien(soDienThoai) 
-        ON DELETE CASCADE
+                          tenDangNhap VARCHAR(15) PRIMARY KEY,   --(la SDT cua nhan vien)
+                          matKhau VARCHAR(255) NOT NULL,
+                          quyenTruyCap NVARCHAR(50) NOT NULL,
+                          trangThai NVARCHAR(50) NOT NULL,
+
+                          CONSTRAINT FK_TaiKhoan_NhanVien_SDT
+                              FOREIGN KEY (tenDangNhap)
+                                  REFERENCES NhanVien(soDienThoai)
+                                  ON DELETE CASCADE
 );
 GO
 
 --5. Bảng LichLam
 CREATE TABLE LichLam (
-    maLichLam VARCHAR(10) PRIMARY KEY,
-    ngayLam DATE NOT NULL,
-    maCa VARCHAR(10) NOT NULL,
-    maNV VARCHAR(10) NOT NULL,
-    
-	--Đảm bảo một nhân viên không thể làm cùng một ca hai lần trong một ngày.
-	CONSTRAINT UQ_LichLam_NgayCaNV UNIQUE (ngayLam, maCa, maNV),
+                         maLichLam VARCHAR(10) PRIMARY KEY,
+                         ngayLam DATE NOT NULL,
+                         maCa VARCHAR(10) NOT NULL,
+                         maNV VARCHAR(10) NOT NULL,
 
-    CONSTRAINT FK_LichLam_CaLam 
-        FOREIGN KEY (maCa) 
-        REFERENCES CaLam(maCa),
-        
-    CONSTRAINT FK_LichLam_NhanVien 
-        FOREIGN KEY (maNV) 
-        REFERENCES NhanVien(maNV)
+    --Đảm bảo một nhân viên không thể làm cùng một ca hai lần trong một ngày.
+                         CONSTRAINT UQ_LichLam_NgayCaNV UNIQUE (ngayLam, maCa, maNV),
+
+                         CONSTRAINT FK_LichLam_CaLam
+                             FOREIGN KEY (maCa)
+                                 REFERENCES CaLam(maCa),
+
+                         CONSTRAINT FK_LichLam_NhanVien
+                             FOREIGN KEY (maNV)
+                                 REFERENCES NhanVien(maNV)
 );
 GO
 
 --6. Bảng NhaCungCap
 CREATE TABLE NhaCungCap (
-    maNCC VARCHAR(10) PRIMARY KEY,
-    tenNCC NVARCHAR(200) NOT NULL,
-    diaChi NVARCHAR(255),
-    soDienThoai VARCHAR(15) UNIQUE NOT NULL,
-    email VARCHAR(100) UNIQUE
+                            maNCC VARCHAR(10) PRIMARY KEY,
+                            tenNCC NVARCHAR(200) NOT NULL,
+                            diaChi NVARCHAR(255),
+                            soDienThoai VARCHAR(15) UNIQUE NOT NULL,
+                            email VARCHAR(100) UNIQUE
 );
 GO
 
 --7. Bảng KhoHang
 CREATE TABLE KhoHang (
-    maKho VARCHAR(10) PRIMARY KEY,
-    tenKho NVARCHAR(100) NOT NULL,
-    diaChi NVARCHAR(255)
+                         maKho VARCHAR(10) PRIMARY KEY,
+                         tenKho NVARCHAR(100) NOT NULL,
+                         diaChi NVARCHAR(255)
 );
 GO
 
 --8. Bảng Thuoc
 CREATE TABLE Thuoc (
     -- Thuộc tính cơ bản
-    maThuoc VARCHAR(15) PRIMARY KEY,
-    tenThuoc NVARCHAR(200) NOT NULL,
-    giaBan DECIMAL(18, 2) NOT NULL,
-    giaNhap DECIMAL(18, 2) NOT NULL,
-    soLuong INT NOT NULL DEFAULT 0,
-    hanSuDung DATE,
-    trangThaiTonKho NVARCHAR(50) NOT NULL,
-    donViTinh NVARCHAR(50) NOT NULL,
-    maNCC VARCHAR(10) NOT NULL,
-    maKho VARCHAR(10) NOT NULL,
-    
-    CONSTRAINT FK_Thuoc_NhaCungCap 
-        FOREIGN KEY (maNCC) 
-        REFERENCES NhaCungCap(maNCC),
-        
-    CONSTRAINT FK_Thuoc_KhoHang 
-        FOREIGN KEY (maKho) 
-        REFERENCES KhoHang(maKho),
-        
+                       maThuoc VARCHAR(15) PRIMARY KEY,
+                       tenThuoc NVARCHAR(200) NOT NULL,
+                       giaBan DECIMAL(18, 2) NOT NULL,
+                       giaNhap DECIMAL(18, 2) NOT NULL,
+                       soLuong INT NOT NULL DEFAULT 0,
+                       hanSuDung DATE,
+                       trangThaiTonKho NVARCHAR(50) NOT NULL,
+                       donViTinh NVARCHAR(50) NOT NULL,
+                       maNCC VARCHAR(10) NOT NULL,
+                       maKho VARCHAR(10) NOT NULL,
+
+                       CONSTRAINT FK_Thuoc_NhaCungCap
+                           FOREIGN KEY (maNCC)
+                               REFERENCES NhaCungCap(maNCC),
+
+                       CONSTRAINT FK_Thuoc_KhoHang
+                           FOREIGN KEY (maKho)
+                               REFERENCES KhoHang(maKho),
+
     -- Ràng buộc kiểm tra (Kiểm tra giá bán > giá nhập)
-    CONSTRAINT CHK_GiaBan_LonHon_GiaNhap 
-        CHECK (giaBan >= giaNhap)
+                       CONSTRAINT CHK_GiaBan_LonHon_GiaNhap
+                           CHECK (giaBan >= giaNhap)
 );
 GO
 
 --9. Bảng KhuyenMai
 CREATE TABLE KhuyenMai (
-    maKM VARCHAR(10) PRIMARY KEY,
-    tenKM NVARCHAR(100) NOT NULL,
-    phanTramGiam DECIMAL(5, 2) NOT NULL,
-    ngayBatDau DATE NOT NULL,
-    ngayKetThuc DATE NOT NULL,
+                           maKM VARCHAR(10) PRIMARY KEY,
+                           tenKM NVARCHAR(100) NOT NULL,
+                           phanTramGiam DECIMAL(5, 2) NOT NULL,
+                           ngayBatDau DATE NOT NULL,
+                           ngayKetThuc DATE NOT NULL,
 
     -- Ràng buộc kiểm tra: phần trăm giảm phải nằm trong khoảng hợp lệ (0% đến 100%)
-    CONSTRAINT CHK_PhanTramGiam CHECK (phanTramGiam >= 0 AND phanTramGiam <= 100),
-    
+                           CONSTRAINT CHK_PhanTramGiam CHECK (phanTramGiam >= 0 AND phanTramGiam <= 100),
+
     -- Ràng buộc kiểm tra: ngày kết thúc phải sau ngày bắt đầu
-    CONSTRAINT CHK_NgayHopLe CHECK (ngayKetThuc >= ngayBatDau)
+                           CONSTRAINT CHK_NgayHopLe CHECK (ngayKetThuc >= ngayBatDau)
 );
 GO
 
 --10. Bảng HoaDon
 CREATE TABLE HoaDon (
-    maHD VARCHAR(15) PRIMARY KEY,
-    maNV VARCHAR(10) NOT NULL,
-    maKH VARCHAR(15),
-    maKM VARCHAR(10), 
-    ngayLap DATE NOT NULL,
-    phuongThucThanhToan NVARCHAR(50) NOT NULL,
-    
+                        maHD VARCHAR(15) PRIMARY KEY,
+                        maNV VARCHAR(10) NOT NULL,
+                        maKH VARCHAR(15),
+                        maKM VARCHAR(10),
+                        ngayLap DATE NOT NULL,
+                        phuongThucThanhToan NVARCHAR(50) NOT NULL,
+
     -- Định nghĩa Khóa ngoại
-    CONSTRAINT FK_HoaDon_NhanVien
-        FOREIGN KEY (maNV) 
-        REFERENCES NhanVien(maNV),
-        
-    CONSTRAINT FK_HoaDon_KhachHang
-        FOREIGN KEY (maKH) 
-        REFERENCES KhachHang(maKH),
-        
-    CONSTRAINT FK_HoaDon_KhuyenMai
-        FOREIGN KEY (maKM) 
-        REFERENCES KhuyenMai(maKM)
+                        CONSTRAINT FK_HoaDon_NhanVien
+                            FOREIGN KEY (maNV)
+                                REFERENCES NhanVien(maNV),
+
+                        CONSTRAINT FK_HoaDon_KhachHang
+                            FOREIGN KEY (maKH)
+                                REFERENCES KhachHang(maKH),
+
+                        CONSTRAINT FK_HoaDon_KhuyenMai
+                            FOREIGN KEY (maKM)
+                                REFERENCES KhuyenMai(maKM)
 );
 GO
 
 --11. ChiTietHoaDon
 CREATE TABLE ChiTietHoaDon (
-    maHD VARCHAR(15) NOT NULL,
-    maThuoc VARCHAR(15) NOT NULL,
-    PRIMARY KEY (maHD, maThuoc), 
-    loaiKhachHang NVARCHAR(50) NOT NULL,
-    tienGiam DECIMAL(18, 2) NOT NULL DEFAULT 0,
-    soLuong INT NOT NULL,
-    donGia DECIMAL(18, 2) NOT NULL,
-    
+                               maHD VARCHAR(15) NOT NULL,
+                               maThuoc VARCHAR(15) NOT NULL,
+                               PRIMARY KEY (maHD, maThuoc),
+                               loaiKhachHang NVARCHAR(50) NOT NULL,
+                               tienGiam DECIMAL(18, 2) NOT NULL DEFAULT 0,
+                               soLuong INT NOT NULL,
+                               donGia DECIMAL(18, 2) NOT NULL,
+
     -- Mối quan hệ 1:N với HoaDon
-    CONSTRAINT FK_CTHD_HoaDon
-        FOREIGN KEY (maHD) 
-        REFERENCES HoaDon(maHD)
-        ON DELETE CASCADE, -- Xóa hóa đơn thì xóa chi tiết
-        
+                               CONSTRAINT FK_CTHD_HoaDon
+                                   FOREIGN KEY (maHD)
+                                       REFERENCES HoaDon(maHD)
+                                       ON DELETE CASCADE, -- Xóa hóa đơn thì xóa chi tiết
+
     -- Mối quan hệ với Thuoc
-    CONSTRAINT FK_CTHD_Thuoc
-        FOREIGN KEY (maThuoc) 
-        REFERENCES Thuoc(maThuoc),
-        
+                               CONSTRAINT FK_CTHD_Thuoc
+                                   FOREIGN KEY (maThuoc)
+                                       REFERENCES Thuoc(maThuoc),
+
     -- Ràng buộc kiểm tra: Số lượng phải lớn hơn 0
-    CONSTRAINT CHK_SoLuong_Duong
-        CHECK (soLuong > 0)
+                               CONSTRAINT CHK_SoLuong_Duong
+                                   CHECK (soLuong > 0)
 );
 GO
 
 --12. DonTraHang
 CREATE TABLE DonTraHang (
-    maDonTra VARCHAR(15) PRIMARY KEY,
-    ngayTra DATE NOT NULL,
-    lyDoTra NVARCHAR(255),
-    trangThai BIT NOT NULL DEFAULT 0, --(0=Chưa xử lý, 1=Đã xử lý)
-    
-    maHD VARCHAR(15) NOT NULL,
-    
+                            maDonTra VARCHAR(15) PRIMARY KEY,
+                            ngayTra DATE NOT NULL,
+                            lyDoTra NVARCHAR(255),
+                            trangThai BIT NOT NULL DEFAULT 0, --(0=Chưa xử lý, 1=Đã xử lý)
+
+                            maHD VARCHAR(15) NOT NULL,
+
     -- Ràng buộc: Một hóa đơn chỉ nên có MỘT đơn trả hàng (nếu nghiệp vụ yêu cầu 1:1)
-    
+
     -- Định nghĩa Khóa ngoại
-    CONSTRAINT FK_DonTraHang_HoaDon
-        FOREIGN KEY (maHD) 
-        REFERENCES HoaDon(maHD)
+                            CONSTRAINT FK_DonTraHang_HoaDon
+                                FOREIGN KEY (maHD)
+                                    REFERENCES HoaDon(maHD)
 );
 GO
 
 
---Thêm dữ liệu mẫu cho các bảng 
+--Thêm dữ liệu mẫu cho các bảng
 --1. Bảng CaLam
 INSERT INTO CaLam (maCa, tenCa, thoiGianBatDau, thoiGianKetThuc) VALUES
 ('CA01', N'Ca Sáng', '07:00:00', '11:00:00'),
@@ -222,8 +216,8 @@ INSERT INTO KhachHang (maKH, tenKH, gioiTinh, loaiKhachHang, diemTichLuy) VALUES
 ('0945678901', N'Trần Đình Công', 1, N'THUONG', 200),
 ('0868889990', N'Vũ Phương Linh', 0, N'VIP', 650),
 ('0791112223', N'Ngô Thế Bảo', 1, N'THUONG', 0),
-('0933445566', N'Hồ Thị Trâm', 0, N'VIP', 1500), 
-('0950001112', N'Bùi Thanh Tú', 1, N'THUONG', 350); 
+('0933445566', N'Hồ Thị Trâm', 0, N'VIP', 1500),
+('0950001112', N'Bùi Thanh Tú', 1, N'THUONG', 350);
 GO
 
 --3. Bảng NhanVien
@@ -236,13 +230,11 @@ GO
 --4. Bảng TaiKhoan
 -- Bước 19: Thêm dữ liệu mẫu cho bảng TaiKhoan
 INSERT INTO TaiKhoan (tenDangNhap, matKhau, quyenTruyCap, trangThai) VALUES
-('0901222333', 'mk123', N'QUAN_LY', N'HOAT_DONG'),
-('0912333444', 'mk123', N'NHAN_VIEN', N'HOAT_DONG'),
-('0384445555', 'mk123', N'NHAN_VIEN', N'HOAT_DONG');
+('0901222333', '$2a$12$dC2Mjj2x.ZRB7fygckFXoe5N1G1FMKPwsREPbiOnHNEONNGCrheWK', 'QUAN_LY', 'DANG_HOAT_DONG')
+
 GO
 
 --5. Bảng LichLam
--- Bước 20: Thêm dữ liệu mẫu cho bảng LichLam
 INSERT INTO LichLam (maLichLam, ngayLam, maCa, maNV) VALUES
 -- NV001 làm 3 ca khác nhau
 ('LL001', '2025-10-25', 'CA01', 'NV001'), -- NV001: Ca Sáng 25/10
