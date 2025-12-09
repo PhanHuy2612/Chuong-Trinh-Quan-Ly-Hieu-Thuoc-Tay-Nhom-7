@@ -1,506 +1,336 @@
 package gui;
 
 import connectDB.ConnectDB;
+import dao.TaiKhoan_DAO;
+import entity.TaiKhoan;
+import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.RoundRectangle2D;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
-public class frmDangNhap extends JFrame {
-    private JButton eyeButton;
-    private ImageIcon eyeOpenIcon;  // icon mở mắt
-    private ImageIcon eyeClosedIcon; // icon nhắm mắt
-    private UnderlineTextField usernameField;
-    private UnderlinePasswordField passwordField;
-    private RoundedButton loginButton;
-    private RoundedButton exitButton; // Nút thoát mới
-    private JLabel titleLabel;
-    private JLabel subtitleLabel;
-    private JLabel descriptionLabel;
-    private JCheckBox rememberCheckBox;
-    private JButton forgotPasswordButton;
+public class frmDangNhap extends Application {
+
+    private Map<String, String> icons = new HashMap<>();
+    private TextField passwordField;
+    private TextField usernameField;
+    private Button eyeButton;
+    private CheckBox rememberCheckBox;
+    private Button forgotPasswordButton;
+    private Button loginButton;
+    private Button exitButton;
     private String usernamePlaceholder = "Nhập tên đăng nhập";
     private String passwordPlaceholder = "Nhập mật khẩu";
+    private Stage primaryStage;
+    private boolean isPasswordHidden = true;
+    private HBox passwordRow;
 
-    public frmDangNhap() {
-        setTitle("Đăng nhập - Hệ thống Quản lý Bán Thuốc Nhà thuốc Thiện Lương");
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+    @Override
+    public void start(Stage primaryStage) {
+        this.primaryStage = primaryStage;  // Assign to class field
+        primaryStage.setTitle("Đăng nhập - Hệ thống Quản lý Bán Thuốc Nhà thuốc Thiện Lương");
+        primaryStage.setResizable(false);
+        primaryStage.setWidth(500);
+        primaryStage.setHeight(700);
+        primaryStage.centerOnScreen();
 
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
-        splitPane.setDividerLocation(0.5);
+        // Kết nối DB
+        try {
+            ConnectDB.getInstance().connect();
+            System.out.println("Kết nối DB thành công từ form đăng nhập.");
+        } catch (SQLException ex) {
+            System.err.println("Lỗi kết nối DB từ form đăng nhập: " + ex.getMessage());
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Lỗi Kết Nối");
+            alert.setHeaderText(null);
+            alert.setContentText("Không thể kết nối cơ sở dữ liệu: " + ex.getMessage());
+            alert.showAndWait();
+        }
 
-        JPanel leftPanel = createLeftPanel();
-        splitPane.setLeftComponent(leftPanel);
+        // Initialize icons
+        initializeIcons();
 
-        JPanel rightPanel = createRightPanel();
-        splitPane.setRightComponent(rightPanel);
+        // Root layout
+        BorderPane root = new BorderPane();
+        root.setStyle("-fx-background-color: #F8FAFC;");
 
-        add(splitPane, BorderLayout.CENTER);
-        setVisible(true);
+        // Right panel - Login form
+        Pane rightPanel = createRightPanel();
+        root.setCenter(rightPanel);
 
-        // Initialize JavaFX toolkit to avoid "Toolkit not initialized" error
-        new JFXPanel();
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
-    private JPanel createLeftPanel() {
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.WHITE);
-        panel.setLayout(new BorderLayout());
-        JLabel imageLabel = new JLabel();
+    private Pane createRightPanel() {
+        VBox mainPanel = new VBox();
+        mainPanel.setStyle("-fx-background-color: #F8FAFC; -fx-padding: 20;");
+        mainPanel.setAlignment(Pos.CENTER);
+        VBox.setVgrow(mainPanel, Priority.ALWAYS);
+
+        // Top panel - Icon, title, subtitle
+        VBox topPanel = new VBox(10);
+        topPanel.setAlignment(Pos.CENTER);
+        topPanel.setStyle("-fx-background-color: #ADD8E6; -fx-padding: 30 40 20 40; -fx-background-radius: 20;");
+        topPanel.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(topPanel, Priority.ALWAYS);
+
+        // Icon
+        ImageView iconView = new ImageView();
         try {
-            ImageIcon originalIcon = new ImageIcon("src/img/Thuoc.png");
-            Image img = originalIcon.getImage();
-            Image scaledImg = img.getScaledInstance(800, 600, Image.SCALE_SMOOTH);
-            ImageIcon scaledIcon = new ImageIcon(scaledImg);
-            imageLabel.setIcon(scaledIcon);
-            imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            Image icon = new Image(getClass().getResourceAsStream("/img/icon_Thuoc.png"));
+            iconView.setImage(icon);
+            iconView.setFitWidth(60);
+            iconView.setFitHeight(60);
+            iconView.setPreserveRatio(true);
+            topPanel.getChildren().add(iconView);  // Move inside try
         } catch (Exception e) {
-            imageLabel.setText("Hình ảnh thuốc (Thuoc.png không tìm thấy)");
-            imageLabel.setFont(new Font("Arial", Font.BOLD, 14));
-            imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        }
-        panel.add(imageLabel, BorderLayout.CENTER);
-        return panel;
-    }
-
-    private JPanel createRightPanel() {
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBackground(new Color(248, 250, 252));
-
-        JPanel topPanel = new JPanel(new GridBagLayout());
-        topPanel.setBackground(new Color(173, 216, 230));
-        topPanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 30, 50));
-
-        GridBagConstraints gbcTop = new GridBagConstraints();
-        gbcTop.insets = new Insets(0, 0, 10, 0);
-        gbcTop.anchor = GridBagConstraints.CENTER;
-
-        // Icon thuốc từ file src/img/icon_Thuoc.png, thay thế hình vuông xanh
-        JLabel iconLabel = new JLabel();
-        try {
-            ImageIcon originalIcon = new ImageIcon("src/img/icon_Thuoc.png");
-            Image img = originalIcon.getImage();
-            Image scaledImg = img.getScaledInstance(60, 60, Image.SCALE_SMOOTH); // Scale icon phù hợp kích thước
-            ImageIcon scaledIcon = new ImageIcon(scaledImg);
-            iconLabel.setIcon(scaledIcon);
-            iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        } catch (Exception e) {
-            iconLabel.setText("💊"); // Fallback nếu không load được
-            iconLabel.setFont(new Font("Arial", Font.PLAIN, 48));
-            iconLabel.setForeground(new Color(59, 130, 246));
-        }
-        try {
-            ImageIcon openIcon = new ImageIcon("src/img/icon_MatMo.png");
-            ImageIcon closedIcon = new ImageIcon("src/img/icon_MatDong.png");
-
-            Image imgOpen = openIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
-            Image imgClosed = closedIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
-
-            eyeOpenIcon = new ImageIcon(imgOpen);
-            eyeClosedIcon = new ImageIcon(imgClosed);
-        } catch (Exception ex) {
-            System.err.println("Không thể tải icon mắt: " + ex.getMessage());
+            Label fallbackIcon = new Label("💊");
+            fallbackIcon.setFont(Font.font("Arial", FontWeight.BOLD, 48));
+            fallbackIcon.setTextFill(Color.web("#3B82F6"));
+            topPanel.getChildren().add(fallbackIcon);
         }
 
-        gbcTop.gridy = 0;
-        topPanel.add(iconLabel, gbcTop);
+        // Title
+        Label titleLabel = new Label("Nhà thuốc Thiện Lương");
+        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 28));
+        titleLabel.setTextFill(Color.BLACK);
+        topPanel.getChildren().add(titleLabel);
 
-        titleLabel = new JLabel("Nhà thuốc Thiện Lương");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 28));
-        titleLabel.setForeground(Color.BLACK);
-        gbcTop.gridy = 1;
-        topPanel.add(titleLabel, gbcTop);
+        // Subtitle
+        Label subtitleLabel = new Label("Hệ thống quản lý bán thuốc");
+        subtitleLabel.setFont(Font.font("Arial", 14));
+        subtitleLabel.setTextFill(Color.web("#6B7280"));
+        topPanel.getChildren().add(subtitleLabel);
 
-        subtitleLabel = new JLabel("Hệ thống quản lý bán thuốc");
-        subtitleLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        subtitleLabel.setForeground(new Color(107, 114, 128));
-        gbcTop.gridy = 2;
-        topPanel.add(subtitleLabel, gbcTop);
+        mainPanel.getChildren().add(topPanel);
 
-        mainPanel.add(topPanel, BorderLayout.NORTH);
+        // Spacer to push form to center vertically
+        Region spacer = new Region();
+        VBox.setVgrow(spacer, Priority.ALWAYS);
+        mainPanel.getChildren().add(spacer);
 
-        RoundedPanel formPanel = new RoundedPanel(20);
-        formPanel.setBackground(Color.WHITE);
-        formPanel.setLayout(new GridBagLayout());
-        formPanel.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
+        // Form panel - Rounded
+        VBox formPanel = new VBox(15);
+        formPanel.setStyle("-fx-background-color: white; -fx-padding: 30 40; -fx-background-radius: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);");
+        formPanel.setMaxWidth(Double.MAX_VALUE);
+        formPanel.setAlignment(Pos.CENTER_LEFT);
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 0, 10, 0);
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        // Description
+        Label descriptionLabel = new Label("Nhập thông tin đăng nhập để truy cập hệ thống");
+        descriptionLabel.setFont(Font.font("Arial", 14));
+        descriptionLabel.setTextFill(Color.web("#6B7280"));
+        formPanel.getChildren().add(descriptionLabel);
 
-        descriptionLabel = new JLabel("Nhập thông tin đăng nhập để truy cập hệ thống");
-        descriptionLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        descriptionLabel.setForeground(new Color(107, 114, 128));
-        gbc.gridy = 0;
-        formPanel.add(descriptionLabel, gbc);
+        // Username
+        Label userLabel = new Label("Tên đăng nhập");
+        userLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        formPanel.getChildren().add(userLabel);
 
-        JLabel userLabel = new JLabel("Tên đăng nhập");
-        userLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        gbc.gridy = 1;
-        formPanel.add(userLabel, gbc);
+        usernameField = new TextField();
+        usernameField.setPromptText(usernamePlaceholder);
+        usernameField.setStyle(getUnderlineStyle());
+        usernameField.setMaxWidth(Double.MAX_VALUE);
+        formPanel.getChildren().add(usernameField);
 
-        usernameField = new UnderlineTextField(30);
-        usernameField.setPreferredSize(new Dimension(300, 40));
-        setupPlaceholder(usernameField, usernamePlaceholder, Color.GRAY);
-        gbc.gridy = 2;
-        formPanel.add(usernameField, gbc);
+        // Password
+        Label passLabel = new Label("Mật khẩu");
+        passLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        formPanel.getChildren().add(passLabel);
 
-        JLabel passLabel = new JLabel("Mật khẩu");
-        passLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        gbc.gridy = 3;
-        formPanel.add(passLabel, gbc);
+        passwordRow = new HBox();
+        passwordRow.setAlignment(Pos.CENTER_LEFT);
+        passwordRow.setSpacing(5);
+        passwordRow.setMaxWidth(Double.MAX_VALUE);
 
-        JPanel passwordRow = new JPanel(new BorderLayout());
-        passwordRow.setBackground(Color.WHITE);
+        passwordField = new PasswordField();
+        passwordField.setPromptText(passwordPlaceholder);
+        passwordField.setStyle(getUnderlineStyle());
+        HBox.setHgrow(passwordField, Priority.ALWAYS);
+        passwordRow.getChildren().add(passwordField);
 
-        passwordField = new UnderlinePasswordField(25);
-        passwordField.setPreferredSize(new Dimension(220, 40));
-        setupPasswordPlaceholder(passwordField, passwordPlaceholder, Color.GRAY);
-        passwordRow.add(passwordField, BorderLayout.CENTER);
+        // Eye button - Use emoji fallback only
+        eyeButton = new Button();
+        eyeButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
+        eyeButton.setText("👁");
+        eyeButton.setFont(Font.font(16));
+        eyeButton.setOnAction(e -> togglePasswordVisibility());
+        passwordRow.getChildren().add(eyeButton);
 
-        JPanel rightPasswordPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-        rightPasswordPanel.setBackground(Color.WHITE);
+        formPanel.getChildren().add(passwordRow);
 
-        eyeButton = new JButton();
-        eyeButton.setIcon(eyeOpenIcon);
-        eyeButton.setPreferredSize(new Dimension(30, 40));
-        eyeButton.setContentAreaFilled(false);
-        eyeButton.setBorderPainted(false);
-        eyeButton.setFocusPainted(false);
-        eyeButton.addActionListener(e -> togglePasswordVisibility());
-        rightPasswordPanel.add(eyeButton);
+        // Remember and forgot
+        HBox bottomRow = new HBox(10);
+        bottomRow.setAlignment(Pos.CENTER_LEFT);
+        bottomRow.setMaxWidth(Double.MAX_VALUE);
 
-        rememberCheckBox = new JCheckBox("Nhớ mật khẩu");
-        rememberCheckBox.setFont(new Font("Arial", Font.PLAIN, 12));
-        rememberCheckBox.setBackground(Color.WHITE);
-        rememberCheckBox.setMargin(new Insets(0, 5, 0, 0));
-        rightPasswordPanel.add(rememberCheckBox);
+        rememberCheckBox = new CheckBox("Nhớ mật khẩu");
+        rememberCheckBox.setFont(Font.font("Arial", 12));
+        bottomRow.getChildren().add(rememberCheckBox);
 
-        passwordRow.add(rightPasswordPanel, BorderLayout.EAST);
-        gbc.gridy = 4;
-        formPanel.add(passwordRow, gbc);
-
-        forgotPasswordButton = new JButton("Quên mật khẩu?");
-        forgotPasswordButton.setFont(new Font("Arial", Font.PLAIN, 12));
-        forgotPasswordButton.setForeground(new Color(59, 130, 246));
-        forgotPasswordButton.setBackground(Color.WHITE);
-        forgotPasswordButton.setBorderPainted(false);
-        forgotPasswordButton.setContentAreaFilled(false);
-        forgotPasswordButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this,
-                    "Chức năng quên mật khẩu sẽ được triển khai sau. Vui lòng liên hệ admin!",
-                    "Quên mật khẩu", JOptionPane.INFORMATION_MESSAGE);
+        forgotPasswordButton = new Button("Quên mật khẩu?");
+        forgotPasswordButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #3B82F6; -fx-cursor: hand; -fx-underline: true;");
+        forgotPasswordButton.setOnAction(e -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Quên mật khẩu");
+            alert.setHeaderText(null);
+            alert.setContentText("Chức năng quên mật khẩu sẽ được triển khai sau. Vui lòng liên hệ admin!");
+            alert.showAndWait();
         });
-        gbc.gridy = 5;
-        gbc.anchor = GridBagConstraints.EAST;
-        formPanel.add(forgotPasswordButton, gbc);
+        HBox.setHgrow(forgotPasswordButton, Priority.ALWAYS);
+        bottomRow.getChildren().add(forgotPasswordButton);
 
-        // Panel chứa hai nút: Đăng nhập (trái) và Thoát (phải), ngang hàng với text field (300px)
-        JPanel buttonPanel = new JPanel(new BorderLayout());
-        buttonPanel.setBackground(Color.WHITE);
-        buttonPanel.setPreferredSize(new Dimension(300, 50)); // Giữ kích thước ngang text field
+        formPanel.getChildren().add(bottomRow);
 
-        // Nút Đăng nhập - bo tròn, xanh dương, căn trái
-        loginButton = new RoundedButton("Đăng nhập");
-        loginButton.setBackground(new Color(59, 130, 246));
-        loginButton.setForeground(Color.WHITE);
-        loginButton.setFont(new Font("Arial", Font.BOLD, 16));
-        loginButton.setPreferredSize(new Dimension(140, 50));
-        loginButton.addActionListener(new LoginActionListener());
-        buttonPanel.add(loginButton, BorderLayout.WEST);
+        // Buttons
+        HBox buttonRow = new HBox(20);
+        buttonRow.setAlignment(Pos.CENTER);
+        buttonRow.setSpacing(20);
+        buttonRow.setMaxWidth(Double.MAX_VALUE);
 
-        // Nút Thoát - bo tròn, đỏ, căn phải
-        exitButton = new RoundedButton("Thoát");
-        exitButton.setBackground(Color.RED);
-        exitButton.setForeground(Color.WHITE);
-        exitButton.setFont(new Font("Arial", Font.BOLD, 16));
-        exitButton.setPreferredSize(new Dimension(140, 50));
-        exitButton.addActionListener(e -> System.exit(0)); // Thoát ứng dụng
-        buttonPanel.add(exitButton, BorderLayout.EAST);
+        loginButton = new Button("Đăng nhập");
+        loginButton.setPrefSize(140, 50);
+        loginButton.setStyle("-fx-background-color: #3B82F6; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16; -fx-background-radius: 25; -fx-cursor: hand;");
+        loginButton.setOnAction(e -> handleLogin());
+        buttonRow.getChildren().add(loginButton);
 
-        gbc.gridy = 6;
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.insets = new Insets(20, 0, 0, 0);
-        formPanel.add(buttonPanel, gbc);
+        exitButton = new Button("Thoát");
+        exitButton.setPrefSize(140, 50);
+        exitButton.setStyle("-fx-background-color: #EF4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16; -fx-background-radius: 25; -fx-cursor: hand;");
+        exitButton.setOnAction(e -> Platform.exit());
+        buttonRow.getChildren().add(exitButton);
 
-        mainPanel.add(formPanel, BorderLayout.CENTER);
+        formPanel.getChildren().add(buttonRow);
+
+        mainPanel.getChildren().add(formPanel);
+
+        // Another spacer for bottom
+        Region bottomSpacer = new Region();
+        VBox.setVgrow(bottomSpacer, Priority.ALWAYS);
+        mainPanel.getChildren().add(bottomSpacer);
+
         return mainPanel;
     }
 
-    // Phương thức togglePasswordVisibility()
+    private String getUnderlineStyle() {
+        return "-fx-background-color: transparent; -fx-padding: 10 10 5 10; -fx-border-width: 0 0 3 0; -fx-border-color: #B4B4B4; -fx-font-size: 14;";
+    }
+
     private void togglePasswordVisibility() {
-        if (passwordField.getEchoChar() == '*') {
-            passwordField.setEchoChar((char) 0);
-            eyeButton.setIcon(eyeClosedIcon); // Icon mắt đóng
+        String currentText = passwordField.getText();
+        passwordRow.getChildren().remove(passwordField);  // Remove old field from UI
+
+        if (isPasswordHidden) {
+            // Switch to visible (TextField)
+            passwordField = new TextField();
+            passwordField.setText(currentText);
+            passwordField.setPromptText(passwordPlaceholder);
+            passwordField.setStyle(getUnderlineStyle());
+            HBox.setHgrow(passwordField, Priority.ALWAYS);
+            eyeButton.setText("🙈");
+            eyeButton.setGraphic(null);
+            isPasswordHidden = false;
         } else {
-            passwordField.setEchoChar('*');
-            eyeButton.setIcon(eyeOpenIcon); // Icon mắt mở
+            // Switch to hidden (PasswordField)
+            passwordField = new PasswordField();
+            passwordField.setText(currentText);
+            passwordField.setPromptText(passwordPlaceholder);
+            passwordField.setStyle(getUnderlineStyle());
+            HBox.setHgrow(passwordField, Priority.ALWAYS);
+            eyeButton.setText("👁");
+            eyeButton.setGraphic(null);
+            isPasswordHidden = true;
         }
+
+        passwordRow.getChildren().add(0, passwordField);  // Add new field to UI at index 0 to maintain order
     }
 
-    private void setupPlaceholder(JTextField field, String placeholder, Color color) {
-        field.setForeground(color);
-        field.setText(placeholder);
-        field.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (field.getText().equals(placeholder)) {
-                    field.setText("");
-                    field.setForeground(Color.BLACK);
-                }
-            }
+    private void handleLogin() {
+        String username = usernameField.getText().trim();
+        if (username.equals(usernamePlaceholder)) username = "";
+        String password = passwordField.getText().trim();
+        if (password.equals(passwordPlaceholder)) password = "";
 
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (field.getText().isEmpty()) {
-                    field.setForeground(color);
-                    field.setText(placeholder);
-                }
-            }
-        });
-    }
+        if (username.isEmpty() || password.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Lỗi");
+            alert.setHeaderText(null);
+            alert.setContentText("Vui lòng nhập tên đăng nhập và mật khẩu!");
+            alert.showAndWait();
+            return;
+        }
 
-    private void setupPasswordPlaceholder(JPasswordField field, String placeholder, Color color) {
-        field.setForeground(color);
-        field.setEchoChar((char) 0);
-        field.setText(placeholder);
-        field.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (new String(field.getPassword()).equals(placeholder)) {
-                    field.setText("");
-                    field.setForeground(Color.BLACK);
-                    field.setEchoChar('*');
-                }
-            }
+        try {
+            TaiKhoan_DAO dao = new TaiKhoan_DAO();
+            TaiKhoan tk = dao.dangNhap(username, password);
 
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (new String(field.getPassword()).length() == 0) {
-                    field.setEchoChar((char) 0);
-                    field.setForeground(color);
-                    field.setText(placeholder);
-                }
-            }
-        });
-    }
+            if (tk != null) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Thành công");
+                alert.setHeaderText(null);
+                alert.setContentText("Đăng nhập thành công! Chào mừng " + tk.getTenDangNhap());
+                alert.showAndWait();
 
-    private class LoginActionListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String username = usernameField.getText().trim();
-            if (username.equals(usernamePlaceholder)) username = "";
-            String password = new String(passwordField.getPassword()).trim();
-            if (password.equals(passwordPlaceholder)) password = "";
+                // Close current stage
+                primaryStage.close();
 
-            if (username.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(frmDangNhap.this,
-                        "Vui lòng nhập tên đăng nhập và mật khẩu!",
-                        "Lỗi", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            try {
-                Connection con = ConnectDB.getConnection();
-                if (con == null) {
-                    JOptionPane.showMessageDialog(frmDangNhap.this,
-                            "Kết nối cơ sở dữ liệu thất bại!",
-                            "Lỗi", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                String sql = "SELECT tenDangNhap, quyenTruyCap, matKhau, trangThaiTaiKhoan, maNhanVien FROM TaiKhoan WHERE tenDangNhap = ? AND matKhau = ?";
-                PreparedStatement ps = con.prepareStatement(sql);
-                ps.setString(1, username);
-                ps.setString(2, password);
-                ResultSet rs = ps.executeQuery();
-
-                if (rs.next()) {
-                    String tenDangNhap = rs.getString("tenDangNhap");
-                    String quyenTruyCap = rs.getString("quyenTruyCap");
-                    String matKhau = rs.getString("matKhau");
-                    String trangThaiTaiKhoan = rs.getString("trangThaiTaiKhoan");
-                    String maNhanVien = rs.getString("maNhanVien");
-
-                    if (rememberCheckBox.isSelected()) {
-                        JOptionPane.showMessageDialog(frmDangNhap.this,
-                                "Đã lưu thông tin đăng nhập.",
-                                "Nhớ mật khẩu", JOptionPane.INFORMATION_MESSAGE);
+                // Open main app
+                String finalUsername = username;
+                Platform.runLater(() -> {
+                    try {
+                        new frmQLBanThuoc_NV(finalUsername).start(new Stage());
+                    } catch (Exception ex) {
+                        // Handle exception from start() asynchronously
+                        Platform.runLater(() -> {
+                            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                            errorAlert.setTitle("Lỗi");
+                            errorAlert.setHeaderText(null);
+                            errorAlert.setContentText("Lỗi khi mở ứng dụng chính: " + ex.getMessage());
+                            errorAlert.showAndWait();
+                        });
                     }
-                    JOptionPane.showMessageDialog(frmDangNhap.this,
-                            "Đăng nhập thành công! Chào mừng đến với hệ thống quản lý bán thuốc.",
-                            "Thành công", JOptionPane.INFORMATION_MESSAGE);
-
-                    dispose(); // Đóng form đăng nhập
-
-                    // Khởi động JavaFX Application từ Swing thread
-                    Platform.runLater(() -> {
-                        try {
-                            new frmQLBanThuoc_NV().start(new Stage());
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                            JOptionPane.showMessageDialog(null, "Lỗi khi mở dashboard: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-                        }
-                    });
-                } else {
-                    JOptionPane.showMessageDialog(frmDangNhap.this,
-                            "Tên đăng nhập hoặc mật khẩu không đúng!",
-                            "Lỗi", JOptionPane.ERROR_MESSAGE);
-                    passwordField.setText("");
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(frmDangNhap.this,
-                        "Lỗi truy vấn cơ sở dữ liệu!",
-                        "Lỗi", JOptionPane.ERROR_MESSAGE);
-                passwordField.setText("");
+                });
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Lỗi");
+                alert.setHeaderText(null);
+                alert.setContentText("Tên đăng nhập hoặc mật khẩu không đúng!");
+                alert.showAndWait();
+                passwordField.clear();
             }
+        } catch (Exception ex) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Lỗi");
+            alert.setHeaderText(null);
+            alert.setContentText("Lỗi hệ thống: " + ex.getMessage());
+            alert.showAndWait();
         }
     }
 
-    private static class RoundedPanel extends JPanel {
-        private int radius;
-        RoundedPanel(int radius) {
-            this.radius = radius;
-            setOpaque(false);
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setColor(getBackground());
-            g2.fillRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
-            g2.dispose();
-        }
+    private void initializeIcons() {
+        // Icons loaded as needed in UI
     }
 
-    private static class RoundedButton extends JButton {
-        private int radius = 25;
-        public RoundedButton(String text) {
-            super(text);
-            setContentAreaFilled(false);
-            setFocusPainted(false);
-            setBorderPainted(false);
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            RoundRectangle2D roundRect = new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), radius * 2, radius * 2);
-            g2.setColor(getModel().isArmed() ? getBackground().darker() : getBackground());
-            g2.fill(roundRect);
-            g2.setColor(getForeground());
-            g2.setFont(getFont());
-            FontMetrics fm = g2.getFontMetrics();
-            int textX = (getWidth() - fm.stringWidth(getText())) / 2;
-            int textY = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
-            g2.drawString(getText(), textX, textY);
-            g2.dispose();
-        }
-    }
-
-    // Cập nhật mới: chỉ vẽ thanh ngang phía dưới
-    private static class UnderlineTextField extends JTextField {
-        private boolean hasFocus = false;
-        private Color underlineColor = new Color(180, 185, 190);
-        private Color focusUnderlineColor = new Color(59, 130, 246);
-
-        public UnderlineTextField(int columns) {
-            super(columns);
-            setOpaque(false);
-            setBorder(null);
-            // Điều chỉnh margin để văn bản không bị che bởi thanh dưới
-            setMargin(new Insets(10, 10, 5, 10)); // Giảm left padding và bottom để gần thanh dưới
-            addFocusListener(new FocusAdapter() {
-                @Override
-                public void focusGained(FocusEvent e) {
-                    hasFocus = true;
-                    underlineColor = focusUnderlineColor;
-                    repaint();
-                }
-                @Override
-                public void focusLost(FocusEvent e) {
-                    hasFocus = false;
-                    underlineColor = new Color(180, 185, 190);
-                    repaint();
-                }
-            });
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-            // Vẽ nền trắng
-            g2.setColor(getBackground() != null ? getBackground() : Color.WHITE);
-            g2.fillRect(0, 0, getWidth(), getHeight());
-
-            // Vẽ thanh ngang phía dưới
-            g2.setStroke(new BasicStroke(3f));
-            g2.setColor(underlineColor);
-            g2.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1);
-
-            super.paintComponent(g);
-            g2.dispose();
-        }
-    }
-
-    private static class UnderlinePasswordField extends JPasswordField {
-        private boolean hasFocus = false;
-        private Color underlineColor = new Color(180, 185, 190);
-        private Color focusUnderlineColor = new Color(59, 130, 246);
-
-        public UnderlinePasswordField(int columns) {
-            super(columns);
-            setOpaque(false);
-            setBorder(null);
-            setMargin(new Insets(10, 10, 5, 10)); // Giảm left padding và bottom để gần thanh dưới
-            addFocusListener(new FocusAdapter() {
-                @Override
-                public void focusGained(FocusEvent e) {
-                    hasFocus = true;
-                    underlineColor = focusUnderlineColor;
-                    repaint();
-                }
-                @Override
-                public void focusLost(FocusEvent e) {
-                    hasFocus = false;
-                    underlineColor = new Color(180, 185, 190);
-                    repaint();
-                }
-            });
-        }
-        @Override
-        protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setColor(getBackground() != null ? getBackground() : Color.WHITE);
-            g2.fillRect(0, 0, getWidth(), getHeight());
-            g2.setStroke(new BasicStroke(3f));
-            g2.setColor(underlineColor);
-            g2.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1);
-            super.paintComponent(g);
-            g2.dispose();
-        }
+    @Override
+    public void stop() throws Exception {
+        ConnectDB.getInstance().disconnect();
+        super.stop();
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(frmDangNhap::new);
+        launch(args);
     }
 }
