@@ -2,67 +2,46 @@ package connectDB;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class ConnectDB {
-    private static Connection con = null;
-    private static final ConnectDB instance = new ConnectDB();
 
-    public static ConnectDB getInstance() {
-        return instance;
-    }
+    static String url = "jdbc:sqlserver://localhost:1433;databasename=QLTHUOC;encrypt=true;trustServerCertificate=true;";
+    static String user = "sa";
+    static String password = "sapassword";
 
-    public static Connection getConnection() {
-        return con;
-    }
-
-    public void connect() throws SQLException {
-        String url = "jdbc:sqlserver://localhost:1433;databaseName=ThienLuong;trustServerCertificate=true";
-        String user = "sa";
-        String password = "sapassword";
-        con = DriverManager.getConnection(url, user, password);
-    }
-
-    public void disconnect() throws SQLException {
-        if (con != null) {
-            try {
-                con.close();
-            } catch (SQLException e) {
-                //noinspection CallToPrintStackTrace
-                e.printStackTrace();
-            }
+    public static PreparedStatement getStmt(String sql, Object... args) throws Exception {
+        Connection con = DriverManager.getConnection(url, user, password);
+        PreparedStatement stmt;
+        if (sql.trim().startsWith("{")) {
+            stmt = con.prepareCall(sql);
+        } else {
+            stmt = con.prepareStatement(sql);
         }
+
+        for (int i = 0; i < args.length; i++) {
+            stmt.setObject(i + 1, args[i]);
+        }
+        return stmt;
     }
 
-    /* Mo phuong thuc nay de kiem tra ket noi CSDL
-    public static void main(String[] args) {
-        ConnectDB db = ConnectDB.getInstance();
+    public static int update(String sql, Object... args) {
         try {
-            // 1. Thực hiện kết nối
-            db.connect();
-
-            // 2. Kiểm tra trạng thái kết nối
-            if (ConnectDB.getConnection() != null && !ConnectDB.getConnection().isClosed()) {
-                System.out.println("Kết nối database THÀNH CÔNG!");
-            } else {
-                System.out.println("Kết nối database THẤT BẠI.");
-            }
-
-        } catch (SQLException e) {
-            System.err.println("LỖI KẾT NỐI XẢY RA:");
-            System.err.println("Mã lỗi: " + e.getErrorCode());
-            System.err.println("Thông báo: " + e.getMessage());
-            // In stack trace chi tiết nếu cần
-            // e.printStackTrace();
-        } finally {
-            // 3. Ngắt kết nối (Rất quan trọng)
+            PreparedStatement stmt = ConnectDB.getStmt(sql, args);
             try {
-                db.disconnect();
-                System.out.println("Đã ngắt kết nối.");
-            } catch (SQLException e) {
-                System.err.println("Lỗi khi ngắt kết nối: " + e.getMessage());
+                return stmt.executeUpdate();
+            } finally {
+                stmt.getConnection().close();
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
-     */
+
+    public static ResultSet query(String sql, Object... args) throws Exception {
+        PreparedStatement stmt = ConnectDB.getStmt(sql, args);
+        return stmt.executeQuery();
+    }
+
 }
