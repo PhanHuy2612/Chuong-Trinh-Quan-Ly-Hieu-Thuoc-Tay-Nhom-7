@@ -11,7 +11,6 @@ import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import utils.Formatter;
-import utils.WritePDF;
 
 public class DetailHoaDonDialog extends javax.swing.JDialog {
 
@@ -329,11 +328,6 @@ public class DetailHoaDonDialog extends javax.swing.JDialog {
         btnPrint.setFocusPainted(false);
         btnPrint.setFocusable(false);
         btnPrint.setPreferredSize(new java.awt.Dimension(200, 40));
-        btnPrint.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPrintActionPerformed(evt);
-            }
-        });
         jPanel8.add(btnPrint);
 
         getContentPane().add(jPanel8, java.awt.BorderLayout.PAGE_END);
@@ -353,12 +347,6 @@ public class DetailHoaDonDialog extends javax.swing.JDialog {
                 new ImageIcon(thuocImage).getImage().getScaledInstance(txtHinhAnh.getWidth(), txtHinhAnh.getHeight(), Image.SCALE_SMOOTH));
         txtHinhAnh.setIcon(imageIcon);
     }
-
-    private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {
-        HoaDon hoaDon = listCTHD.get(0).getHoaDon();
-        new WritePDF().printHoaDon(hoaDon, listCTHD);
-    }
-
 
     private javax.swing.JButton btnHuy;
     private javax.swing.JButton btnPrint;

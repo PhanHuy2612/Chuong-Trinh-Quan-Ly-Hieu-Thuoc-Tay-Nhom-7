@@ -10,7 +10,6 @@ import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import utils.Formatter;
-import utils.WritePDF;
 
 public class DetailPhieuNhapDialog extends javax.swing.JDialog {
 
@@ -316,11 +315,6 @@ public class DetailPhieuNhapDialog extends javax.swing.JDialog {
 		btnPrint.setFocusPainted(false);
 		btnPrint.setFocusable(false);
 		btnPrint.setPreferredSize(new java.awt.Dimension(200, 40));
-		btnPrint.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				btnPrintActionPerformed(evt);
-			}
-		});
 		jPanel8.add(btnPrint);
 
 		getContentPane().add(jPanel8, java.awt.BorderLayout.PAGE_END);
@@ -340,11 +334,6 @@ public class DetailPhieuNhapDialog extends javax.swing.JDialog {
 				.getScaledInstance(txtHinhAnh.getWidth(), txtHinhAnh.getHeight(), Image.SCALE_SMOOTH));
 		txtHinhAnh.setIcon(imageIcon);
 	}// GEN-LAST:event_tableMouseClicked
-
-	private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnPrintActionPerformed
-		PhieuNhap phieuNhap = listCTPN.get(0).getPhieuNhap();
-		new WritePDF().printPhieuNhap(phieuNhap, listCTPN);
-	}// GEN-LAST:event_btnPrintActionPerformed
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JButton btnHuy;

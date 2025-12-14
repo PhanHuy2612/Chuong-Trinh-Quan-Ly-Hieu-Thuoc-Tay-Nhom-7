@@ -28,7 +28,6 @@ import utils.MessageDialog;
 import utils.RandomGenerator;
 import utils.TableSorter;
 import utils.Validation;
-import utils.WritePDF;
 
 public class CreateHoaDonPage extends javax.swing.JPanel {
 
@@ -987,10 +986,6 @@ public class CreateHoaDonPage extends javax.swing.JPanel {
 				CTHD_CON.create(listCTHD);
 				MessageDialog.info(this, "Lập hóa đơn thành công!");
 
-				// In hóa đơn
-				if (MessageDialog.confirm(this, "Bạn có muốn in hóa đơn không?", "In hóa đơn")) {
-					new WritePDF().printHoaDon(hd, listCTHD);
-				}
 
 				// Trở về trang hóa đơn
 				main.setPanel(new HoaDonPage(main));
