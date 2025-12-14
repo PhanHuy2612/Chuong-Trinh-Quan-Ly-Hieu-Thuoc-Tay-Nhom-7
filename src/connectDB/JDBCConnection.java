@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class ConnectDB {
+public class JDBCConnection {
 
     static String url = "jdbc:sqlserver://localhost:1433;databasename=QLTHUOC;encrypt=true;trustServerCertificate=true;";
     static String user = "sa";
@@ -28,7 +28,7 @@ public class ConnectDB {
 
     public static int update(String sql, Object... args) {
         try {
-            PreparedStatement stmt = ConnectDB.getStmt(sql, args);
+            PreparedStatement stmt = JDBCConnection.getStmt(sql, args);
             try {
                 return stmt.executeUpdate();
             } finally {
@@ -40,7 +40,7 @@ public class ConnectDB {
     }
 
     public static ResultSet query(String sql, Object... args) throws Exception {
-        PreparedStatement stmt = ConnectDB.getStmt(sql, args);
+        PreparedStatement stmt = JDBCConnection.getStmt(sql, args);
         return stmt.executeQuery();
     }
 
