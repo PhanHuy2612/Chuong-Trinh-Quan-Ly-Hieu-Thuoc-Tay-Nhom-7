@@ -6,10 +6,6 @@ import entities.ThongKe;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author HP
- */
 public class ThongKeDAO {
 
 	private final String SELECT_7_DAYS_AGO = """
