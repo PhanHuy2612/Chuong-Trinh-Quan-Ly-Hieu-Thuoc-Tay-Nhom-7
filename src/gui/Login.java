@@ -5,8 +5,8 @@ import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
-import dao.TaiKhoan_DAO;
-import entity.TaiKhoan;
+import controller.TaiKhoanController;
+import entities.TaiKhoan;
 import java.awt.event.KeyEvent;
 import utils.BCrypt;
 import utils.MessageDialog;
@@ -25,9 +25,6 @@ public class Login extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> {
             Login login = new Login();
             login.setVisible(true);
-            String hash = BCrypt.hashpw("123123", BCrypt.gensalt(12));
-            System.out.println(hash);
-
         });
     }
 
@@ -59,15 +56,15 @@ public class Login extends javax.swing.JFrame {
         String password = txtPassword.getText();
 
         if (isValidateFields()) {
-            TaiKhoan tk = new TaiKhoan_DAO().selectByUsername(username);
+            TaiKhoan tk = new TaiKhoanController().selectByUsername(username);
 
             if (tk == null) {
                 MessageDialog.error(this, "Tài khoản không tồn tại!");
                 return;
             }
 
-            if (username.equals(tk.getTenDangNhap()) && BCrypt.compare(password, tk.getMatKhau())) {
-//                new MainLayout(tk).setVisible(true);
+            if (username.equals(tk.getUsername()) && BCrypt.compare(password, tk.getPassword())) {
+                new MainLayout(tk).setVisible(true);
                 this.dispose();
             } else {
                 MessageDialog.error(this, "Tài khoản hoặc mật khẩu không chính xác. Vui lòng kiểm tra lại!");
@@ -123,7 +120,6 @@ public class Login extends javax.swing.JFrame {
         logo.setFont(new java.awt.Font("Segoe Print", 1, 32)); // NOI18N
         logo.setForeground(new java.awt.Color(0, 183, 183));
         logo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        logo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/logo-64.png"))); // NOI18N
         logo.setText("Thien Luong");
         logo.setPreferredSize(new java.awt.Dimension(360, 120));
         jPanel4.add(logo);
@@ -149,7 +145,7 @@ public class Login extends javax.swing.JFrame {
         txtUsername.setPreferredSize(new java.awt.Dimension(350, 27));
         txtUsername.setSelectionColor(new java.awt.Color(0, 153, 153));
         txtUsername.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
+            public void keyPressed(KeyEvent evt) {
                 txtUsernameKeyPressed(evt);
             }
         });
@@ -170,7 +166,7 @@ public class Login extends javax.swing.JFrame {
         txtPassword.setText("123123");
         txtPassword.setPreferredSize(new java.awt.Dimension(90, 40));
         txtPassword.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
+            public void keyPressed(KeyEvent evt) {
                 txtPasswordKeyPressed(evt);
             }
         });
@@ -229,13 +225,13 @@ public class Login extends javax.swing.JFrame {
         authentication();
     }//GEN-LAST:event_btnLoginActionPerformed
 
-    private void txtUsernameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUsernameKeyPressed
+    private void txtUsernameKeyPressed(KeyEvent evt) {//GEN-FIRST:event_txtUsernameKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             authentication();
         }
     }//GEN-LAST:event_txtUsernameKeyPressed
 
-    private void txtPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPasswordKeyPressed
+    private void txtPasswordKeyPressed(KeyEvent evt) {//GEN-FIRST:event_txtPasswordKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             authentication();
         }
