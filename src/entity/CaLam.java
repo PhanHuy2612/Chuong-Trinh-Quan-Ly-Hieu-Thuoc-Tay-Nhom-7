@@ -1,77 +1,138 @@
 package entity;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class CaLam {
-    private String maCa;
-    private String tenCa;
-    private LocalTime thoiGianBatDau;
-    private LocalTime thoiGianKetThuc;
+    private String maCaLam;
+    private String tenCaLam;
+    private LocalDate ngayLamViec;
+    private LocalTime gioBatDau;
+    private LocalTime gioKetThuc;
+    private String viTriLamViec;
+    private int soLuongNhanVienCan;
+    private String ghiChu;
+    private List<NhanVien> nhanVienPhanCong;
 
     public CaLam() {
+        nhanVienPhanCong = new ArrayList<>();
     }
 
-    public CaLam(String maCa, String tenCa, LocalTime thoiGianBatDau, LocalTime thoiGianKetThuc) {
-        this.maCa = maCa;
-        this.tenCa = tenCa;
-        this.thoiGianBatDau = thoiGianBatDau;
-        this.thoiGianKetThuc = thoiGianKetThuc;
+    public CaLam(String maCaLam, String tenCaLam, LocalDate ngayLamViec,
+                 LocalTime gioBatDau, LocalTime gioKetThuc,
+                 String viTriLamViec, int soLuongNhanVienCan, String ghiChu) {
+        this.maCaLam = maCaLam;
+        this.tenCaLam = tenCaLam;
+        this.ngayLamViec = ngayLamViec;
+        this.gioBatDau = gioBatDau;
+        this.gioKetThuc = gioKetThuc;
+        this.viTriLamViec = viTriLamViec;
+        this.soLuongNhanVienCan = soLuongNhanVienCan;
+        this.ghiChu = ghiChu;
+        this.nhanVienPhanCong = new ArrayList<>();
     }
 
-    public String getMaCa() {
-        return maCa;
+    // Getters & Setters
+    public String getMaCaLam() {
+        return maCaLam;
     }
 
-    public void setMaCa(String maCa) {
-        this.maCa = maCa;
+    public void setMaCaLam(String maCaLam) {
+        this.maCaLam = maCaLam;
     }
 
-    public String getTenCa() {
-        return tenCa;
+    public String getTenCaLam() {
+        return tenCaLam;
     }
 
-    public void setTenCa(String tenCa) {
-        this.tenCa = tenCa;
+    public void setTenCaLam(String tenCaLam) {
+        this.tenCaLam = tenCaLam;
     }
 
-    public LocalTime getThoiGianBatDau() {
-        return thoiGianBatDau;
+    public LocalDate getNgayLamViec() {
+        return ngayLamViec;
     }
 
-    public void setThoiGianBatDau(LocalTime thoiGianBatDau) {
-        this.thoiGianBatDau = thoiGianBatDau;
+    public void setNgayLamViec(LocalDate ngayLamViec) {
+        this.ngayLamViec = ngayLamViec;
     }
 
-    public LocalTime getThoiGianKetThuc() {
-        return thoiGianKetThuc;
+    public LocalTime getGioBatDau() {
+        return gioBatDau;
     }
 
-    public void setThoiGianKetThuc(LocalTime thoiGianKetThuc) {
-        this.thoiGianKetThuc = thoiGianKetThuc;
+    public void setGioBatDau(LocalTime gioBatDau) {
+        this.gioBatDau = gioBatDau;
+    }
+
+    public LocalTime getGioKetThuc() {
+        return gioKetThuc;
+    }
+
+    public void setGioKetThuc(LocalTime gioKetThuc) {
+        this.gioKetThuc = gioKetThuc;
+    }
+
+    public String getViTriLamViec() {
+        return viTriLamViec;
+    }
+
+    public void setViTriLamViec(String viTriLamViec) {
+        this.viTriLamViec = viTriLamViec;
+    }
+
+    public int getSoLuongNhanVienCan() {
+        return soLuongNhanVienCan;
+    }
+
+    public void setSoLuongNhanVienCan(int soLuongNhanVienCan) {
+        this.soLuongNhanVienCan = soLuongNhanVienCan;
+    }
+
+    public String getGhiChu() {
+        return ghiChu;
+    }
+
+    public void setGhiChu(String ghiChu) {
+        this.ghiChu = ghiChu;
+    }
+
+    public List<NhanVien> getNhanVienPhanCong() {
+        return nhanVienPhanCong;
+    }
+
+    public void setNhanVienPhanCong(List<NhanVien> nhanVienPhanCong) {
+        this.nhanVienPhanCong = nhanVienPhanCong;
+    }
+
+    public void themNhanVien(NhanVien nv) {
+        if (!nhanVienPhanCong.contains(nv)) {
+            nhanVienPhanCong.add(nv);
+        }
+    }
+
+    public void xoaNhanVien(NhanVien nv) {
+        nhanVienPhanCong.remove(nv);
     }
 
     @Override
     public String toString() {
-        return "CaLam{" +
-                "maCa='" + maCa + '\'' +
-                ", tenCa='" + tenCa + '\'' +
-                ", thoiGianBatDau='" + thoiGianBatDau + '\'' +
-                ", thoiGianKetThuc='" + thoiGianKetThuc + '\'' +
-                '}';
+        return tenCaLam + " (" + gioBatDau + " - " + gioKetThuc + ")";
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) return true;
+        if (!(o instanceof CaLam)) return false;
         CaLam caLam = (CaLam) o;
-        return Objects.equals(maCa, caLam.maCa);
+        return Objects.equals(maCaLam, caLam.maCaLam);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(maCa);
+        return Objects.hash(maCaLam);
     }
-
-
 }

@@ -1,32 +1,45 @@
 package entity;
 
 import enums.PhuongThucThanhToan;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class HoaDon {
+
     private String maHD;
-    private NhanVien nhanVien;
     private KhachHang khachHang;
-    private KhuyenMai khuyenMai;
+    private NhanVien nhanVien;
     private LocalDate ngayLap;
     private PhuongThucThanhToan phuongThucThanhToan;
+    private BigDecimal thueVAT;
+    private BigDecimal tongTien;
+    private BigDecimal tienGiam;
     private List<ChiTietHoaDon> danhSachCTHD;
 
     public HoaDon() {
         this.danhSachCTHD = new ArrayList<>();
+        this.thueVAT = BigDecimal.ZERO;
+        this.tongTien = BigDecimal.ZERO;
+        this.tienGiam = BigDecimal.ZERO;
     }
 
-    public HoaDon(String maHD, NhanVien nhanVien, KhachHang khachHang, KhuyenMai khuyenMai, LocalDate ngayLap, PhuongThucThanhToan phuongThucThanhToan) {
+    public HoaDon(String maHD,
+                  KhachHang khachHang,
+                  LocalDate ngayLap,
+                  PhuongThucThanhToan phuongThucThanhToan,
+                  BigDecimal thueVAT,
+                  NhanVien nhanVien) {
         this();
         this.maHD = maHD;
-        this.nhanVien = nhanVien;
         this.khachHang = khachHang;
-        this.khuyenMai = khuyenMai;
         this.ngayLap = ngayLap;
         this.phuongThucThanhToan = phuongThucThanhToan;
+        this.thueVAT = thueVAT != null ? thueVAT : BigDecimal.ZERO;
+        this.nhanVien = nhanVien;
     }
 
     public String getMaHD() {
@@ -37,14 +50,6 @@ public class HoaDon {
         this.maHD = maHD;
     }
 
-    public NhanVien getNhanVien() {
-        return nhanVien;
-    }
-
-    public void setNhanVien(NhanVien nhanVien) {
-        this.nhanVien = nhanVien;
-    }
-
     public KhachHang getKhachHang() {
         return khachHang;
     }
@@ -53,12 +58,12 @@ public class HoaDon {
         this.khachHang = khachHang;
     }
 
-    public KhuyenMai getKhuyenMai() {
-        return khuyenMai;
+    public NhanVien getNhanVien() {
+        return nhanVien;
     }
 
-    public void setKhuyenMai(KhuyenMai khuyenMai) {
-        this.khuyenMai = khuyenMai;
+    public void setNhanVien(NhanVien nhanVien) {
+        this.nhanVien = nhanVien;
     }
 
     public LocalDate getNgayLap() {
@@ -77,51 +82,93 @@ public class HoaDon {
         this.phuongThucThanhToan = phuongThucThanhToan;
     }
 
+    public BigDecimal getThueVAT() {
+        return thueVAT;
+    }
+
+    public void setThueVAT(BigDecimal thueVAT) {
+        this.thueVAT = thueVAT != null ? thueVAT : BigDecimal.ZERO;
+    }
+
+    public BigDecimal getTongTien() {
+        return tongTien;
+    }
+
+    public void setTongTien(BigDecimal tongTien) {
+        this.tongTien = tongTien != null ? tongTien : BigDecimal.ZERO;
+    }
+
+    public BigDecimal getTienGiam() {
+        return tienGiam;
+    }
+
+    public void setTienGiam(BigDecimal tienGiam) {
+        this.tienGiam = tienGiam != null ? tienGiam : BigDecimal.ZERO;
+    }
+
     public List<ChiTietHoaDon> getDanhSachCTHD() {
         return danhSachCTHD;
     }
 
     public void setDanhSachCTHD(List<ChiTietHoaDon> danhSachCTHD) {
-        this.danhSachCTHD = danhSachCTHD;
+        this.danhSachCTHD = danhSachCTHD != null
+                ? danhSachCTHD
+                : new ArrayList<>();
     }
 
     public boolean themChiTiet(ChiTietHoaDon cthd) {
-        // Thêm các kiểm tra nghiệp vụ nếu cần
         return this.danhSachCTHD.add(cthd);
     }
 
-    public double tinhTongTien() {
-        double tongTienHang = 0;
-        for (ChiTietHoaDon cthd : danhSachCTHD) {
-            tongTienHang += cthd.tinhThanhTien();
-        }
-        return tongTienHang;
+    public BigDecimal tinhTienHang() {
+        return danhSachCTHD.stream()
+                .map(ct -> ct.getDonGia()
+                        .multiply(BigDecimal.valueOf(ct.getSoLuong())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    @Override
-    public String toString() {
-        return "HoaDon{" +
-                "maHD='" + maHD + '\'' +
-                // Chỉ in ra mã của các đối tượng
-                ", nhanVien=" + (nhanVien != null ? nhanVien.getMaNV() : "N/A") +
-                ", khachHang=" + (khachHang != null ? khachHang.getMaKH() : "N/A") +
-                ", khuyenMai=" + (khuyenMai != null ? khuyenMai.getMaKM() : "N/A") +
-                ", ngayLap=" + ngayLap +
-                ", phuongThucThanhToan=" + phuongThucThanhToan +
-                ", soLuongCTHD=" + danhSachCTHD.size() + // In số lượng CTHD
-                ", tongTien=" + tinhTongTien() + // In tổng tiền
-                '}';
+    public BigDecimal tinhTienGiam() {
+        return tienGiam != null ? tienGiam : BigDecimal.ZERO;
+    }
+    public BigDecimal tinhTienVAT() {
+        BigDecimal tienSauGiam = tinhTienHang().subtract(tinhTienGiam());
+        return tienSauGiam.multiply(thueVAT);
+    }
+    public BigDecimal tinhTongThanhToan() {
+        BigDecimal tong = tinhTienHang()
+                .subtract(tinhTienGiam())
+                .add(tinhTienVAT());
+
+        this.tongTien = tong.max(BigDecimal.ZERO);
+        return this.tongTien;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) return true;
+        if (!(o instanceof HoaDon)) return false;
         HoaDon hoaDon = (HoaDon) o;
         return Objects.equals(maHD, hoaDon.maHD);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(maHD);
+        return Objects.hash(maHD);
+    }
+
+    @Override
+    public String toString() {
+        return "HoaDon{" +
+                "maHD='" + maHD + '\'' +
+                ", khachHang=" + (khachHang != null ? khachHang.getMaKH() : "N/A") +
+                ", nhanVien=" + (nhanVien != null ? nhanVien.getMaNV() : "N/A") +
+                ", ngayLap=" + ngayLap +
+                ", phuongThucThanhToan=" + phuongThucThanhToan +
+                ", tienHang=" + tinhTienHang() +
+                ", tienGiam=" + tienGiam +
+                ", thueVAT=" + thueVAT +
+                ", tongTien=" + tongTien +
+                ", soLuongCTHD=" + danhSachCTHD.size() +
+                '}';
     }
 }
