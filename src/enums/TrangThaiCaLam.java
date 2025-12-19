@@ -1,12 +1,14 @@
 package enums;
 
-public enum TrangThaiTaiKhoan {
-    DANGHOATDONG("Đang hoạt động"),
-    KHOA("Khóa");
+public enum TrangThaiCaLam {
+    CHUA_BAT_DAU("Chưa bắt đầu"),
+    DANG_LAM("Đang làm"),
+    VANG_MAT("Vắng mặt"),
+    HOAN_THANH("Hoàn thành");
 
     private final String moTa;
 
-    TrangThaiTaiKhoan(String moTa) {
+    TrangThaiCaLam(String moTa) {
         this.moTa = moTa;
     }
 
@@ -18,5 +20,4 @@ public enum TrangThaiTaiKhoan {
     public String toString() {
         return moTa;
     }
-
 }

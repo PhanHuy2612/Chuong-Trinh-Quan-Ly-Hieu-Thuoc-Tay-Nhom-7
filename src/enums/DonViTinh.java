@@ -3,8 +3,9 @@ package enums;
 public enum DonViTinh {
     VIEN("Viên"),
     HOP("Hộp"),
-    VI("Vỉ"),
-    CHAI("Chai");
+    TUYP("Tuýp"),
+    CHAI("Chai"),
+    GOI("Gói");
 
     private final String moTa;
 

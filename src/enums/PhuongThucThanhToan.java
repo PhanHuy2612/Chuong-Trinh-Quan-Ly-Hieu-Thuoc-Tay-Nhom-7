@@ -4,18 +4,18 @@ public enum PhuongThucThanhToan {
     TIEN_MAT("Tiền mặt"),
     CHUYEN_KHOAN("Chuyển khoản");
 
-    private final String moTa;
+    private final String displayName;
 
-    PhuongThucThanhToan(String moTa) {
-        this.moTa = moTa;
+    PhuongThucThanhToan(String displayName) {
+        this.displayName = displayName;
     }
 
-    public String getMoTa() {
-        return moTa;
+    public String getDisplayName() {
+        return displayName;
     }
 
     @Override
     public String toString() {
-        return moTa;
+        return displayName;
     }
 }
