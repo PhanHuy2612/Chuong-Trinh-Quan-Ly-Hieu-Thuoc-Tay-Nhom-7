@@ -5,7 +5,27 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="17" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="mssql-jdbc-12.10.0.jre11" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/src" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="Java EE 6-Java EE 6" level="project" />
+    <orderEntry type="library" name="javax.mail-1.6.2" level="project" />
+    <orderEntry type="library" name="log4j-api-2.24.1" level="project" />
+    <orderEntry type="library" name="lib" level="project" />
+    <orderEntry type="library" name="jakarta.activation-1.2.2" level="project" />
+    <orderEntry type="library" name="xmlbeans-5.2.1" level="project" />
+    <orderEntry type="library" name="poi-5.3.0" level="project" />
+    <orderEntry type="library" name="commons-collections4-5.0.jar" level="project" />
   </component>
 </module>
