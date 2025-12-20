@@ -1,19 +1,24 @@
 package entity;
 
+import enums.TrangThaiTonKho;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class KhoHang {
     private String maKho;
-    private String tenKho;
-    private String diaChi;
+    private LocalDate ngayNhap;
+    private String email;
+    private int soLuong;
+    private TrangThaiTonKho trangThai;
 
-    public KhoHang() {
-    }
+    public KhoHang() {}
 
-    public KhoHang(String maKho, String tenKho, String diaChi) {
+    public KhoHang(String maKho, LocalDate ngayNhap, String email, int soLuong, TrangThaiTonKho trangThai) {
         this.maKho = maKho;
-        this.tenKho = tenKho;
-        this.diaChi = diaChi;
+        this.ngayNhap = ngayNhap;
+        this.email = email;
+        this.soLuong = soLuong;
+        this.trangThai = trangThai;
     }
 
     public String getMaKho() {
@@ -24,40 +29,59 @@ public class KhoHang {
         this.maKho = maKho;
     }
 
-    public String getTenKho() {
-        return tenKho;
+    public LocalDate getNgayNhap() {
+        return ngayNhap;
     }
 
-    public void setTenKho(String tenKho) {
-        this.tenKho = tenKho;
+    public void setNgayNhap(LocalDate ngayNhap) {
+        this.ngayNhap = ngayNhap;
     }
 
-    public String getDiaChi() {
-        return diaChi;
+    public String getEmail() {
+        return email;
     }
 
-    public void setDiaChi(String diaChi) {
-        this.diaChi = diaChi;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getSoLuong() {
+        return soLuong;
+    }
+
+    public void setSoLuong(int soLuong) {
+        this.soLuong = soLuong;
+    }
+
+    public TrangThaiTonKho getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(TrangThaiTonKho trangThai) {
+        this.trangThai = trangThai;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) return true;
+        if (!(o instanceof KhoHang)) return false;
         KhoHang khoHang = (KhoHang) o;
         return Objects.equals(maKho, khoHang.maKho);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(maKho);
+        return Objects.hash(maKho);
     }
 
     @Override
     public String toString() {
         return "KhoHang{" +
                 "maKho='" + maKho + '\'' +
-                ", tenKho='" + tenKho + '\'' +
-                ", diaChi='" + diaChi + '\'' +
+                ", ngayNhap=" + ngayNhap +
+                ", email='" + email + '\'' +
+                ", soLuong=" + soLuong +
+                ", trangThai=" + trangThai +
                 '}';
     }
 }

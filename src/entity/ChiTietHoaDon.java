@@ -1,23 +1,40 @@
 package entity;
 
-import enums.LoaiKhachHang;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 public class ChiTietHoaDon {
+
+    private HoaDon hoaDon;
     private Thuoc thuoc;
-    private LoaiKhachHang loaiKhachHang;
-    private double tienGiam;
+
     private int soLuong;
-    private double donGia;
+    private BigDecimal donGia;
+    private BigDecimal thanhTien;
 
     public ChiTietHoaDon() {
+        this.soLuong = 0;
+        this.donGia = BigDecimal.ZERO;
+        this.thanhTien = BigDecimal.ZERO;
     }
 
-    public ChiTietHoaDon(Thuoc thuoc, LoaiKhachHang loaiKhachHang, double tienGiam, int soLuong, double donGia) {
+    public ChiTietHoaDon(HoaDon hoaDon, Thuoc thuoc, int soLuong, BigDecimal donGia) {
+        this();
+        this.hoaDon = hoaDon;
         this.thuoc = thuoc;
-        this.loaiKhachHang = loaiKhachHang;
-        this.tienGiam = tienGiam;
-        this.soLuong = soLuong;
-        this.donGia = donGia;
+        this.soLuong = Math.max(0, soLuong);
+        this.donGia = donGia != null ? donGia : BigDecimal.ZERO;
+        tinhThanhTien();
+    }
+
+    /* ================= GETTER / SETTER ================= */
+
+    public HoaDon getHoaDon() {
+        return hoaDon;
+    }
+
+    public void setHoaDon(HoaDon hoaDon) {
+        this.hoaDon = hoaDon;
     }
 
     public Thuoc getThuoc() {
@@ -28,50 +45,69 @@ public class ChiTietHoaDon {
         this.thuoc = thuoc;
     }
 
-    public LoaiKhachHang getLoaiKhachHang() {
-        return loaiKhachHang;
-    }
-
-    public void setLoaiKhachHang(LoaiKhachHang loaiKhachHang) {
-        this.loaiKhachHang = loaiKhachHang;
-    }
-
-    public double getTienGiam() {
-        return tienGiam;
-    }
-
-    public void setTienGiam(double tienGiam) {
-        this.tienGiam = tienGiam;
-    }
-
     public int getSoLuong() {
         return soLuong;
     }
 
     public void setSoLuong(int soLuong) {
-        this.soLuong = soLuong;
+        this.soLuong = Math.max(0, soLuong);
+        tinhThanhTien();
     }
 
-    public double getDonGia() {
+    public BigDecimal getDonGia() {
         return donGia;
     }
 
-    public void setDonGia(double donGia) {
-        this.donGia = donGia;
+    public void setDonGia(BigDecimal donGia) {
+        this.donGia = donGia != null ? donGia : BigDecimal.ZERO;
+        tinhThanhTien();
     }
 
-    public double tinhThanhTien() {
-        return donGia * soLuong - tienGiam;
+    public BigDecimal getThanhTien() {
+        return thanhTien;
+    }
+
+    public void setThanhTien(BigDecimal thanhTien) {
+        this.thanhTien = thanhTien != null ? thanhTien : BigDecimal.ZERO;
+    }
+
+    /* ================= LOGIC ================= */
+
+    /**
+     * Thành tiền = đơn giá × số lượng
+     */
+    public BigDecimal tinhThanhTien() {
+        this.thanhTien = donGia
+                .multiply(BigDecimal.valueOf(soLuong))
+                .max(BigDecimal.ZERO);
+        return this.thanhTien;
+    }
+
+    /* ================= OVERRIDE ================= */
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ChiTietHoaDon)) return false;
+        ChiTietHoaDon that = (ChiTietHoaDon) o;
+        return Objects.equals(hoaDon, that.hoaDon) &&
+                Objects.equals(thuoc, that.thuoc);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(hoaDon, thuoc);
     }
 
     @Override
     public String toString() {
         return "ChiTietHoaDon{" +
-                "maSP='" + (thuoc != null ? thuoc.getMaThuoc() : "N/A") + '\'' +
-                ", loaiKhachHang=" + loaiKhachHang +
-                ", tienGiam=" + tienGiam +
+                "maHD='" + (hoaDon != null ? hoaDon.getMaHD() : "N/A") + '\'' +
+                ", maThuoc='" + (thuoc != null ? thuoc.getMaThuoc() : "N/A") + '\'' +
+                ", tenThuoc='" + (thuoc != null ? thuoc.getTenThuoc() : "N/A") + '\'' +
                 ", soLuong=" + soLuong +
                 ", donGia=" + donGia +
+                ", thanhTien=" + thanhTien +
                 '}';
     }
 }

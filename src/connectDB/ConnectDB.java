@@ -8,30 +8,55 @@ public class ConnectDB {
     private static Connection con = null;
     private static final ConnectDB instance = new ConnectDB();
 
+    private final String URL = "jdbc:sqlserver://localhost:1433;databaseName=QLThuoc;encrypt=true;trustServerCertificate=true;";
+    private final String USER = "sa";
+    private final String PASSWORD = "sapassword";
+
+    // 🔹 Singleton pattern
     public static ConnectDB getInstance() {
         return instance;
     }
 
+    // 🔹 Trả về connection hiện tại
     public static Connection getConnection() {
+        try {
+            if (con == null || con.isClosed()) {
+                ConnectDB.getInstance().connect();
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Lỗi khi mở lại kết nối: " + e.getMessage());
+            try {
+                ConnectDB.getInstance().connect();
+            } catch (SQLException ex) {
+                throw new RuntimeException("Không thể mở lại kết nối SQL Server", ex);
+            }
+        }
         return con;
     }
 
+
+    // 🔹 Kết nối SQL Server (tự động mở lại nếu bị đóng)
     public void connect() throws SQLException {
-        String url = "jdbc:sqlserver://localhost:1433;databaseName=ThienLuong";
-        String user = "sa";
-        String password = "sapassword";
-        con = DriverManager.getConnection(url, user, password);
+        try {
+            if (con == null || con.isClosed()) {
+                con = DriverManager.getConnection(URL, USER, PASSWORD);
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Lỗi khi kết nối SQL Server: " + e.getMessage());
+            throw e;
+        }
     }
 
-    public void disconnect() throws SQLException {
-        if (con != null) {
-            try {
+    // 🔹 Đóng kết nối (chỉ gọi khi thoát chương trình)
+    public void disconnect() {
+        try {
+            if (con != null && !con.isClosed()) {
                 con.close();
-            } catch (SQLException e) {
-                //noinspection CallToPrintStackTrace
-                e.printStackTrace();
+                con = null;
+                System.out.println("🔌 Đã ngắt kết nối SQL Server.");
             }
+        } catch (SQLException e) {
+            System.err.println("❌ Lỗi khi ngắt kết nối: " + e.getMessage());
         }
-
     }
 }

@@ -1,21 +1,21 @@
 package enums;
 
 public enum LoaiKhachHang {
-    VANG_LAI("Vãng lai"),
-    THUONG("Thường"),
+    VANGLAI("Vãng lai"),
+    BINHTHUONG("Thường"),
     VIP("VIP");
-    private final String moTa;
+    private final String ten;
 
-    LoaiKhachHang(String moTa) {
-        this.moTa = moTa;
+    LoaiKhachHang(String ten) {
+        this.ten = ten;
     }
 
-    public String getMoTa() {
-        return moTa;
+    public String getTen() {
+        return ten;
     }
 
     @Override
     public String toString() {
-        return moTa;
+        return ten;
     }
 }

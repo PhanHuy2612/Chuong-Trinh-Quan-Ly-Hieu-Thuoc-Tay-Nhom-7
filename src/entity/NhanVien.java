@@ -6,19 +6,25 @@ import java.util.Objects;
 public class NhanVien {
     private String maNV;
     private String tenNV;
-    private boolean gioiTinh; // true: Nam, false: Nữ
+    private boolean gioiTinh;
     private LocalDate ngaySinh;
     private String soDienThoai;
+    private String diaChi;
+    private String hinhAnh;
+    private String email;
 
     public NhanVien() {
     }
-
-    public NhanVien(String maNV, String tenNV, boolean gioiTinh, LocalDate ngaySinh, String soDienThoai) {
+    public NhanVien(String maNV, String tenNV, boolean gioiTinh, LocalDate ngaySinh,
+                    String soDienThoai, String diaChi, String hinhAnh, String email) {
         this.maNV = maNV;
         this.tenNV = tenNV;
         this.gioiTinh = gioiTinh;
         this.ngaySinh = ngaySinh;
         this.soDienThoai = soDienThoai;
+        this.diaChi = diaChi;
+        this.hinhAnh = hinhAnh;
+        this.email = email;
     }
 
     public String getMaNV() {
@@ -61,26 +67,54 @@ public class NhanVien {
         this.soDienThoai = soDienThoai;
     }
 
+    public String getDiaChi() {
+        return diaChi;
+    }
+
+    public void setDiaChi(String diaChi) {
+        this.diaChi = diaChi;
+    }
+
+    public String getHinhAnh() {
+        return hinhAnh;
+    }
+
+    public void setHinhAnh(String hinhAnh) {
+        this.hinhAnh = hinhAnh;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
         return "NhanVien{" +
                 "maNV='" + maNV + '\'' +
                 ", tenNV='" + tenNV + '\'' +
-                ", gioiTinh=" + gioiTinh +
+                ", gioiTinh=" + (gioiTinh ? "Nam" : "Nữ") +
                 ", ngaySinh=" + ngaySinh +
+                ", email='" + email + '\'' +
                 ", soDienThoai='" + soDienThoai + '\'' +
+                ", diaChi='" + diaChi + '\'' +
+                ", hinhAnh='" + hinhAnh + '\'' +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == this) return true;
+        if (!(o instanceof NhanVien)) return false;
         NhanVien nhanVien = (NhanVien) o;
         return Objects.equals(maNV, nhanVien.maNV);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(maNV);
+        return Objects.hash(maNV);
     }
 }

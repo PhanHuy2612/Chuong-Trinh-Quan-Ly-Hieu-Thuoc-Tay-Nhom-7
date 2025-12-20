@@ -8,7 +8,7 @@ public class DonTraHang {
     private LocalDate ngayTra;
     private String lyDoTra;
     private HoaDon hoaDon;
-    private boolean trangThai;  // true: Đã xử lý, false: Chưa xử lý
+    private boolean trangThai;
 
     public DonTraHang() {
     }

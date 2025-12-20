@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="commons-collections4-5.0.jar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../commons-io-2.16.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../commons-compress-1.27.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../commons-collections4-4.5.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,7 +1,7 @@
 package enums;
 
 public enum TrangThaiTaiKhoan {
-    DANG_HOAT_DONG("Đang hoạt động"),
+    DANGHOATDONG("Đang hoạt động"),
     KHOA("Khóa");
 
     private final String moTa;
